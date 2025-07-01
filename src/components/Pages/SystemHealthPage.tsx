@@ -6,6 +6,7 @@ import MemoryMetrics from '../Monitoring/MemoryMetrics';
 import NetworkMetrics from '../Monitoring/NetworkMetrics';
 import DiskMetrics from '../Monitoring/DiskMetrics';
 import ServicesMetrics from '../Monitoring/ServicesMetrics';
+import ProcessesMetrics from '../Monitoring/ProcessesMetrics';
 import PageWrapper from './PageWrapper';
 import { useFirebaseData } from '../../hooks/useFirebaseData';
 
@@ -128,19 +129,34 @@ const SystemHealthPage: React.FC = () => {
           <CPUMetrics data={latestData.cpu} instanceId={latestTimestamp} />
         </div>
         <div id="memory-metrics-section" className="bg-white/90 backdrop-blur-sm border border-gray-200/20 rounded-lg shadow-lg overflow-hidden">
-          <MemoryMetrics data={latestData.memory.physical} instanceId={latestTimestamp} />
+          <MemoryMetrics 
+            data={latestData.memory.physical} 
+            swap={latestData.memory.swap}
+            virtualMemory={latestData.memory.virtualMemory}
+            instanceId={latestTimestamp} 
+          />
         </div>
         <div id="network-metrics-section" className="bg-white/90 backdrop-blur-sm border border-gray-200/20 rounded-lg shadow-lg overflow-hidden">
           <NetworkMetrics networkData={latestData.network} instanceId={latestTimestamp} />
         </div>
         <div id="disk-metrics-section" className="bg-white/90 backdrop-blur-sm border border-gray-200/20 rounded-lg shadow-lg overflow-hidden">
-          <DiskMetrics data={latestData.storage} />
+          <DiskMetrics data={latestData.storage} smartDisks={latestData.smart?.disks || []} />
         </div>
       </div>
 
       {/* Services */}
       <div id="services-metrics-section" className="mt-6 bg-white/90 backdrop-blur-sm border border-gray-200/20 rounded-lg shadow-lg overflow-hidden">
         <ServicesMetrics data={latestData.processes.topProcesses.cpu} instanceId={latestTimestamp} />
+      </div>
+
+      {/* Processes */}
+      <div id="processes-metrics-section" className="mt-6 bg-white/90 backdrop-blur-sm border border-gray-200/20 rounded-lg shadow-lg overflow-hidden">
+        <ProcessesMetrics 
+          summary={latestData.processes.summary}
+          topCPU={latestData.processes.topProcesses.cpu}
+          topMemory={latestData.processes.topProcesses.memory}
+          instanceId={latestTimestamp}
+        />
       </div>
     </PageWrapper>
   );

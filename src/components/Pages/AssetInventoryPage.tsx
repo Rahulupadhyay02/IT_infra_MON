@@ -116,21 +116,27 @@ const AssetInventoryPage: React.FC = () => {
               </h3>
               <div className="bg-slate-50/80 backdrop-blur-sm rounded-lg p-4 space-y-3 shadow-sm">
                 <div>
-                  <p className="text-sm text-slate-600">Total Memory</p>
+                  <p className="text-sm text-slate-600">Used Memory</p>
                   <p className="text-sm font-medium text-slate-800">
-                    {(memory.physical.total / (1024 * 1024 * 1024)).toFixed(2)} GB
+                    {(memory.physical.used / 100).toFixed(2)} GB
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-slate-600">Used Memory</p>
+                  <p className="text-sm text-slate-600">Buffer Memory</p>
                   <p className="text-sm font-medium text-slate-800">
-                    {(memory.physical.used / (1024 * 1024 * 1024)).toFixed(2)} GB
+                    {(memory.physical.buffers / 100).toFixed(2)} GB
                   </p>
                 </div>
                 <div>
                   <p className="text-sm text-slate-600">Free Memory</p>
                   <p className="text-sm font-medium text-slate-800">
-                    {(memory.physical.free / (1024 * 1024 * 1024)).toFixed(2)} GB
+                    {((memory.physical.total - memory.physical.used - memory.physical.buffers) / 100).toFixed(2)} GB
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-slate-600">Total Memory</p>
+                  <p className="text-sm font-medium text-slate-800">
+                    {(memory.physical.total / 100).toFixed(2)} GB
                   </p>
                 </div>
                 <div>

@@ -4,10 +4,12 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recha
 
 interface MemoryMetricsProps {
   data: MonitoringData['monitoring']['server-info'][string]['memory']['physical'];
+  swap: MonitoringData['monitoring']['server-info'][string]['memory']['swap'];
+  virtualMemory: MonitoringData['monitoring']['server-info'][string]['memory']['virtualMemory'];
   instanceId: string;
 }
 
-const MemoryMetrics: React.FC<MemoryMetricsProps> = ({ data, instanceId }) => {
+const MemoryMetrics: React.FC<MemoryMetricsProps> = ({ data, swap, virtualMemory, instanceId }) => {
   const usedPercentage = (data.used / data.total) * 100;
   const buffersPercentage = (data.buffers / data.total) * 100;
   const freePercentage = 100 - usedPercentage - buffersPercentage;
@@ -29,6 +31,24 @@ const MemoryMetrics: React.FC<MemoryMetricsProps> = ({ data, instanceId }) => {
     const gbValue = value / 100;
     return `${gbValue.toFixed(2)} GB`;
   };
+
+  // Swap memory chart data
+  const swapUsedPercent = (swap.used / swap.total) * 100;
+  const swapFreePercent = 100 - swapUsedPercent;
+  const swapData = [
+    { name: 'Used', value: swapUsedPercent },
+    { name: 'Free', value: swapFreePercent }
+  ];
+  const SWAP_COLORS = ['#f59e42', '#e5e7eb'];
+
+  // Virtual memory chart data
+  const virtUsedPercent = (virtualMemory.used / virtualMemory.total) * 100;
+  const virtFreePercent = 100 - virtUsedPercent;
+  const virtData = [
+    { name: 'Used', value: virtUsedPercent },
+    { name: 'Free', value: virtFreePercent }
+  ];
+  const VIRT_COLORS = ['#7c3aed', '#e5e7eb'];
 
   return (
     <div className="bg-white rounded-lg shadow p-6 fade-in">
@@ -87,6 +107,72 @@ const MemoryMetrics: React.FC<MemoryMetricsProps> = ({ data, instanceId }) => {
             </span>
           </div>
         ))}
+      </div>
+      {/* Swap Memory Chart */}
+      <div className="mt-10">
+        <h4 className="text-md font-semibold text-orange-600 mb-2">Swap Memory Usage</h4>
+        <div className="h-48">
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={swapData}
+                cx="50%"
+                cy="50%"
+                innerRadius={50}
+                outerRadius={70}
+                paddingAngle={4}
+                dataKey="value"
+                isAnimationActive={true}
+              >
+                {swapData.map((entry, idx) => (
+                  <Cell key={`swap-cell-${idx}`} fill={SWAP_COLORS[idx]} stroke="#fff" strokeWidth={2} />
+                ))}
+              </Pie>
+              <Tooltip formatter={(value: number) => `${value.toFixed(1)}%`} />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+        <div className="flex justify-center gap-6 mt-2">
+          <div className="flex flex-col items-center text-sm text-gray-700">
+            <span>Used: {formatGigaBytes(swap.used)}</span>
+            <span>Free: {formatGigaBytes(swap.free)}</span>
+            <span>Total: {formatGigaBytes(swap.total)}</span>
+          </div>
+        </div>
+      </div>
+      {/* Virtual Memory Chart */}
+      <div className="mt-10">
+        <h4 className="text-md font-semibold text-purple-600 mb-2">Virtual Memory Usage</h4>
+        <div className="h-48">
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={virtData}
+                cx="50%"
+                cy="50%"
+                innerRadius={50}
+                outerRadius={70}
+                paddingAngle={4}
+                dataKey="value"
+                isAnimationActive={true}
+              >
+                {virtData.map((entry, idx) => (
+                  <Cell key={`virt-cell-${idx}`} fill={VIRT_COLORS[idx]} stroke="#fff" strokeWidth={2} />
+                ))}
+              </Pie>
+              <Tooltip formatter={(value: number) => `${value.toFixed(1)}%`} />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+        <div className="flex justify-center gap-6 mt-2">
+          <div className="flex flex-col items-center text-sm text-gray-700">
+            <span>Used: {formatGigaBytes(virtualMemory.used)}</span>
+            <span>Free: {formatGigaBytes(virtualMemory.free)}</span>
+            <span>Total: {formatGigaBytes(virtualMemory.total)}</span>
+          </div>
+        </div>
       </div>
     </div>
   );

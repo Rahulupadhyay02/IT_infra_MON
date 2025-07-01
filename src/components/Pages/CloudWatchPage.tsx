@@ -31,12 +31,13 @@ const CloudWatchPage: React.FC = () => {
   const timestamps = Object.keys(data?.monitoring?.['server-info'] || {}).sort();
   
   // Prepare data for charts
-  const metricsData = timestamps.map(timestamp => {
+  const metricsData = timestamps.map((timestamp, idx) => {
     const serverInfo = data?.monitoring?.['server-info'][timestamp];
     if (!serverInfo) return null;
-    
+    // Most recent is 'Now', then -1, -2, ...
+    const indexLabel = idx === timestamps.length - 1 ? 'Now' : `-${timestamps.length - 1 - idx}`;
     return {
-      timestamp: new Date(timestamp.replace(/-/g, ':')).toLocaleTimeString(),
+      indexLabel,
       cpu: serverInfo.cpu.usage.overall,
       memory: (serverInfo.memory.physical.used / serverInfo.memory.physical.total) * 100,
       diskUsage: serverInfo.storage.volumes[0]?.size.percentage || 0,
@@ -68,7 +69,7 @@ const CloudWatchPage: React.FC = () => {
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={metricsData} margin={{ top: 16, right: 24, left: 0, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
-                <XAxis dataKey="timestamp" stroke="#64748b" />
+                <XAxis dataKey="indexLabel" stroke="#64748b" />
                 <YAxis stroke="#64748b" />
                 <Tooltip contentStyle={{ background: 'rgba(255,255,255,0.95)', borderRadius: '0.75rem', border: '1px solid #e0e7ff' }} />
                 <Legend />
@@ -96,7 +97,7 @@ const CloudWatchPage: React.FC = () => {
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
-                <XAxis dataKey="timestamp" stroke="#64748b" />
+                <XAxis dataKey="indexLabel" stroke="#64748b" />
                 <YAxis stroke="#64748b" />
                 <Tooltip contentStyle={{ background: 'rgba(255,255,255,0.95)', borderRadius: '0.75rem', border: '1px solid #e0e7ff' }} />
                 <Legend />
@@ -128,7 +129,7 @@ const CloudWatchPage: React.FC = () => {
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
-                <XAxis dataKey="timestamp" stroke="#64748b" />
+                <XAxis dataKey="indexLabel" stroke="#64748b" />
                 <YAxis stroke="#64748b" />
                 <Tooltip contentStyle={{ background: 'rgba(255,255,255,0.95)', borderRadius: '0.75rem', border: '1px solid #e0e7ff' }} />
                 <Legend />
@@ -154,7 +155,7 @@ const CloudWatchPage: React.FC = () => {
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={metricsData} margin={{ top: 16, right: 24, left: 0, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
-                <XAxis dataKey="timestamp" stroke="#64748b" />
+                <XAxis dataKey="indexLabel" stroke="#64748b" />
                 <YAxis stroke="#64748b" />
                 <Tooltip contentStyle={{ background: 'rgba(255,255,255,0.95)', borderRadius: '0.75rem', border: '1px solid #e0e7ff' }} />
                 <Legend />
@@ -196,7 +197,7 @@ const CloudWatchPage: React.FC = () => {
               {metricsData.map((metric, index) => (
                 <tr key={index} className={`${index % 2 === 0 ? 'bg-white/30' : 'bg-slate-50/30'} hover:bg-slate-50/50 transition-colors`}>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-800">
-                    {metric.timestamp}
+                    {metric.indexLabel}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-800">
                     {metric.cpu.toFixed(1)}%

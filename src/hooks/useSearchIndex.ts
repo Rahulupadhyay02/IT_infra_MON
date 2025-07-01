@@ -120,6 +120,46 @@ const pageStructure: SearchItem[] = [
     elementId: 'services-metrics-section',
     content: 'Running Services Service Name PID CPU Usage Memory Usage Status Total Services Running Stopped Sleeping Sort by CPU Sort by Memory Service Management',
   },
+  {
+    type: 'section',
+    title: 'Per-Core CPU Usage',
+    path: '/system-health',
+    section: 'cpu-metrics',
+    elementId: 'cpu-metrics-section',
+    content: 'Per-core CPU usage chart Core frequency Core utilization CPU core breakdown'
+  },
+  {
+    type: 'section',
+    title: 'Swap & Virtual Memory',
+    path: '/system-health',
+    section: 'memory-metrics',
+    elementId: 'memory-metrics-section',
+    content: 'Swap memory usage Virtual memory usage Swap/Virtual memory charts RAM swap virtual summary'
+  },
+  {
+    type: 'section',
+    title: 'SMART Disk Health',
+    path: '/system-health',
+    section: 'disk-metrics',
+    elementId: 'disk-metrics-section',
+    content: 'SMART disk health table Disk health status DeviceId FriendlyName HealthStatus MediaType OperationalStatus Size'
+  },
+  {
+    type: 'section',
+    title: 'Process Summary',
+    path: '/system-health',
+    section: 'processes-metrics',
+    elementId: 'processes-metrics-section',
+    content: 'Process summary chart Running Sleeping Zombie Stopped Top CPU Top Memory Process state pie chart'
+  },
+  {
+    type: 'section',
+    title: 'System Info Cards',
+    path: '/system-health',
+    section: 'system-info',
+    elementId: 'system-overview-section',
+    content: 'Uptime Last Boot Hostname Manufacturer Model OS Version System info cards'
+  },
 
   // CloudWatch Page
   {
@@ -264,6 +304,22 @@ const pageStructure: SearchItem[] = [
     elementId: 'monitoring-section',
     content: 'CloudWatch Metrics CPU Utilization Network Traffic Disk IO Status Checks Performance Monitoring',
   },
+  {
+    type: 'section',
+    title: 'Firewall Status',
+    path: '/ec2-instances',
+    section: 'firewall-status',
+    elementId: 'firewall-status-section',
+    content: 'Firewall status Domain Private Public Firewall badges Security state'
+  },
+  {
+    type: 'section',
+    title: 'Last Boot & Hostname',
+    path: '/ec2-instances',
+    section: 'system-info',
+    elementId: 'system-info-section',
+    content: 'Last Boot Hostname System info EC2 instance details'
+  },
 
   // Load Balancers Page
   {
@@ -303,6 +359,30 @@ const pageStructure: SearchItem[] = [
     section: 'monitoring',
     elementId: 'monitoring-section',
     content: 'Request Count Latency Error Rate Healthy Hosts Performance Metrics Load Balancer Monitoring',
+  },
+
+  // Settings Page
+  {
+    type: 'page',
+    title: 'Settings & Maintenance',
+    path: '/settings',
+    content: 'Settings Maintenance Backups Alerts Logs Users System configuration'
+  },
+  {
+    type: 'section',
+    title: 'Backups Module',
+    path: '/settings',
+    section: 'backups',
+    elementId: undefined,
+    content: 'Backups module Backup error Last backup time Refresh backups Backup status'
+  },
+  {
+    type: 'section',
+    title: 'Other Settings',
+    path: '/settings',
+    section: 'other-settings',
+    elementId: undefined,
+    content: 'Configure Alerts Download Logs Manage Users Settings actions'
   }
 ];
 

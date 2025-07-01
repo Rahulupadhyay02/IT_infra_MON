@@ -22,6 +22,7 @@ const CloudWatchPage = lazy(() => import('./components/Pages/CloudWatchPage'));
 const LoadBalancersPage = lazy(() => import('./components/Pages/LoadBalancersPage'));
 const AssetInventoryPage = lazy(() => import('./components/Pages/AssetInventoryPage'));
 const ScheduledJobsPage = lazy(() => import('./components/Pages/ScheduledJobsPage'));
+const SettingsPage = lazy(() => import('./components/Pages/SettingsPage'));
 
 const LoadingSpinner = () => (
   <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -168,6 +169,13 @@ function App() {
           <ProtectedRoute>
             <DashboardLayout>
               <ScheduledJobsPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        } />
+        <Route path="/settings" element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <SettingsPage />
             </DashboardLayout>
           </ProtectedRoute>
         } />

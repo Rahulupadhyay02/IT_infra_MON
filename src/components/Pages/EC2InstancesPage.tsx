@@ -91,6 +91,14 @@ const EC2InstancesPage = () => {
                   <span className="text-sm text-slate-600">Uptime</span>
                   <span className="text-sm font-medium text-slate-800">{systemInfo.basics.os.uptime}</span>
                 </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-slate-600">Last Boot</span>
+                  <span className="text-sm font-medium text-slate-800">{systemInfo.basics.os.lastBoot}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-slate-600">Hostname</span>
+                  <span className="text-sm font-medium text-slate-800">{systemInfo.basics.hostname}</span>
+                </div>
               </div>
             </div>
 
@@ -114,6 +122,16 @@ const EC2InstancesPage = () => {
                   <span className="text-sm text-slate-600">Serial Number</span>
                   <span className="text-sm font-medium text-slate-800">{systemInfo.basics.hardware.serialNumber}</span>
                 </div>
+              </div>
+            </div>
+
+            {/* Firewall Status */}
+            <div id="firewall-status-section" className="bg-slate-50/80 backdrop-blur-sm p-4 rounded-lg shadow-sm flex flex-col items-start">
+              <h3 className="text-sm font-semibold text-slate-800 mb-4">Firewall Status</h3>
+              <div className="flex flex-wrap gap-3">
+                <span className={`px-3 py-1 rounded-full text-xs font-semibold shadow-sm ${serverInfo.firewall.domain === 'ON' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>Domain: {serverInfo.firewall.domain}</span>
+                <span className={`px-3 py-1 rounded-full text-xs font-semibold shadow-sm ${serverInfo.firewall.private === 'ON' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>Private: {serverInfo.firewall.private}</span>
+                <span className={`px-3 py-1 rounded-full text-xs font-semibold shadow-sm ${serverInfo.firewall.public === 'ON' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>Public: {serverInfo.firewall.public}</span>
               </div>
             </div>
 

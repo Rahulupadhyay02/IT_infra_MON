@@ -50,6 +50,31 @@ const CPUMetrics: React.FC<CPUMetricsProps> = ({ data, instanceId }) => {
           </BarChart>
         </ResponsiveContainer>
       </div>
+      {/* Per-Core Usage Chart */}
+      {data.perCore && data.perCore.length > 0 && (
+        <div className="mt-8">
+          <h4 className="text-md font-semibold text-slate-700 mb-2">Per-Core Usage</h4>
+          <div className="h-56">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={data.perCore.map(core => ({
+                id: `Core ${core.id}`,
+                usage: core.usage,
+                frequency: core.frequency
+              }))} margin={{ top: 8, right: 24, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
+                <XAxis dataKey="id" stroke="#64748b" />
+                <YAxis domain={[0, 100]} stroke="#64748b" />
+                <Tooltip formatter={(value, name, props) => [`${value}% @ ${props.payload.frequency} MHz`, 'Usage']} />
+                <Bar dataKey="usage" name="Usage (%)" isAnimationActive={true}>
+                  {data.perCore.map((core, idx) => (
+                    <Cell key={`core-bar-${idx}`} fill={BAR_COLORS[idx % BAR_COLORS.length]} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

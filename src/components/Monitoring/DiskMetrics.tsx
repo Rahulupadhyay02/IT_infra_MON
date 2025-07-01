@@ -4,9 +4,10 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recha
 
 interface DiskMetricsProps {
   data: MonitoringData['monitoring']['server-info'][string]['storage'];
+  smartDisks: MonitoringData['monitoring']['server-info'][string]['smart']['disks'];
 }
 
-const DiskMetrics: React.FC<DiskMetricsProps> = ({ data }) => {
+const DiskMetrics: React.FC<DiskMetricsProps> = ({ data, smartDisks }) => {
   const formatGigaBytes = (value: number) => {
     if (!value || isNaN(value)) return '0.00 GB';
     
@@ -138,6 +139,46 @@ const DiskMetrics: React.FC<DiskMetricsProps> = ({ data }) => {
           <span className="text-sm text-gray-600">100%</span>
         </div>
       </div>
+      {/* SMART Disk Health Table */}
+      {smartDisks && smartDisks.length > 0 && (
+        <div className="mt-8">
+          <h4 className="text-md font-semibold text-slate-700 mb-4">SMART Disk Health</h4>
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead>
+                <tr>
+                  <th className="px-4 py-2 text-left text-xs font-semibold text-slate-700 uppercase">Device ID</th>
+                  <th className="px-4 py-2 text-left text-xs font-semibold text-slate-700 uppercase">Name</th>
+                  <th className="px-4 py-2 text-left text-xs font-semibold text-slate-700 uppercase">Health</th>
+                  <th className="px-4 py-2 text-left text-xs font-semibold text-slate-700 uppercase">Type</th>
+                  <th className="px-4 py-2 text-left text-xs font-semibold text-slate-700 uppercase">Status</th>
+                  <th className="px-4 py-2 text-left text-xs font-semibold text-slate-700 uppercase">Size</th>
+                </tr>
+              </thead>
+              <tbody>
+                {smartDisks.map((disk, idx) => (
+                  <tr key={disk.DeviceId} className={idx % 2 === 0 ? 'bg-white' : 'bg-slate-50'}>
+                    <td className="px-4 py-2 text-sm text-slate-800">{disk.DeviceId}</td>
+                    <td className="px-4 py-2 text-sm text-slate-800">{disk.FriendlyName}</td>
+                    <td className="px-4 py-2 text-sm">
+                      <span className={`px-2 py-1 rounded text-xs font-bold ${
+                        disk.HealthStatus === 'Healthy' ? 'bg-green-100 text-green-800' :
+                        disk.HealthStatus === 'Warning' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-red-100 text-red-800'
+                      }`}>
+                        {disk.HealthStatus}
+                      </span>
+                    </td>
+                    <td className="px-4 py-2 text-sm text-slate-800">{disk.MediaType}</td>
+                    <td className="px-4 py-2 text-sm text-slate-800">{disk.OperationalStatus}</td>
+                    <td className="px-4 py-2 text-sm text-slate-800">{formatGigaBytes(disk.Size)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
