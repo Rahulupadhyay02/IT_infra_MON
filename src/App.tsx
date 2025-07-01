@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import TopHeader from './components/Header/TopHeader';
 import MainHeader from './components/Header/MainHeader';
@@ -34,6 +34,7 @@ const LoadingSpinner = () => (
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const { data, loading, error } = useFirebaseData();
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   if (loading) {
     return <LoadingSpinner />;
@@ -46,20 +47,19 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         <MainHeader />
         <NavigationTabs />
       </div>
-      
       <div className="flex flex-1 pt-[160px]">
-        <aside className="fixed left-0 top-[160px] bottom-0 w-64 bg-gradient-to-b from-slate-800 to-slate-900 z-40">
-          <Sidebar />
+        <aside className="fixed left-0 top-[160px] bottom-0 z-40">
+          <Sidebar collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} />
         </aside>
-        
-        <main className="flex-1 ml-64 p-6 overflow-auto relative">
-          <Suspense fallback={<LoadingSpinner />}>
-            {children}
-          </Suspense>
-        </main>
+        <div className={`flex-1 flex flex-col transition-all duration-300 ${sidebarCollapsed ? 'ml-20' : 'ml-64'}`}>
+          <main className="flex-1 p-6 overflow-auto relative">
+            <Suspense fallback={<LoadingSpinner />}>
+              {children}
+            </Suspense>
+          </main>
+          <Footer />
+        </div>
       </div>
-      
-      <Footer />
     </div>
   );
 };

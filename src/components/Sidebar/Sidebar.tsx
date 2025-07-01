@@ -2,10 +2,15 @@ import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   Home, Heart, AlertTriangle, Server, BarChart3, 
-  Scale, Ticket, Package, Shield, Zap, Clock 
+  Scale, Ticket, Package, Shield, Zap, Clock, ChevronLeft, ChevronRight 
 } from 'lucide-react';
 
-const Sidebar: React.FC = () => {
+interface SidebarProps {
+  collapsed: boolean;
+  setCollapsed: (collapsed: boolean) => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const currentPath = location.pathname;
@@ -45,10 +50,22 @@ const Sidebar: React.FC = () => {
   ];
 
   return (
-    <div className="w-64 py-5 h-full overflow-y-auto">
+    <div
+      className={`h-full overflow-y-auto bg-gradient-to-b from-slate-800 to-slate-900 transition-all duration-300 ${collapsed ? 'w-20' : 'w-64'}`}
+    >
+      {/* Collapse/Expand Button */}
+      <div className="flex justify-end items-center px-2 pt-3 pb-1">
+        <button
+          onClick={() => setCollapsed(!collapsed)}
+          className="rounded-full p-2 bg-slate-700 hover:bg-slate-600 transition-colors shadow-md"
+          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        >
+          {collapsed ? <ChevronRight className="w-5 h-5 text-blue-300" /> : <ChevronLeft className="w-5 h-5 text-blue-300" />}
+        </button>
+      </div>
       {menuSections.map((section, sectionIndex) => (
         <div key={sectionIndex} className="mb-6">
-          <div className="px-5 pb-2">
+          <div className={`px-5 pb-2 ${collapsed ? 'hidden' : ''}`}>
             <h3 className="text-xs font-semibold text-blue-300 uppercase tracking-wider">
               {section.title}
             </h3>
@@ -61,14 +78,14 @@ const Sidebar: React.FC = () => {
                 <button
                   key={item.id}
                   onClick={() => navigate(item.id)}
-                  className={`w-full flex items-center px-5 py-2.5 text-sm font-medium transition-all duration-200 border-l-2 ${
+                  className={`w-full flex items-center transition-all duration-200 border-l-2 px-2 py-2.5 text-sm font-medium ${
                     isActive
                       ? 'text-white bg-slate-700/50 border-blue-400 shadow-sm'
                       : 'text-slate-300 border-transparent hover:text-white hover:bg-slate-700/30'
-                  }`}
+                  } ${collapsed ? 'justify-center px-0' : 'px-5'}`}
                 >
-                  <Icon className={`w-4 h-4 mr-3 ${isActive ? 'text-blue-400' : 'text-slate-400'}`} />
-                  {item.label}
+                  <Icon className={`w-5 h-5 ${isActive ? 'text-blue-400' : 'text-slate-400'} transition-colors`} />
+                  {!collapsed && <span className="ml-3 truncate">{item.label}</span>}
                 </button>
               );
             })}

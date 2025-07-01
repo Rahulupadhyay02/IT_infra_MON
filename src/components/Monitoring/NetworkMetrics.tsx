@@ -1,6 +1,6 @@
 import React from 'react';
 import { MonitoringData } from '../../types/monitoring';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 interface NetworkMetricsProps {
   networkData: MonitoringData['monitoring']['server-info'][string]['network'];
@@ -13,16 +13,25 @@ const NetworkMetrics: React.FC<NetworkMetricsProps> = ({ networkData, instanceId
   };
 
   const connectionData = [
-    { name: 'Established', value: networkData.connections.established },
-    { name: 'Time Wait', value: networkData.connections.timeWait },
-    { name: 'Close Wait', value: networkData.connections.closeWait },
-    { name: 'Listening', value: networkData.connections.listening }
+    {
+      name: 'Connections',
+      Established: networkData.connections.established,
+      'Time Wait': networkData.connections.timeWait,
+      'Close Wait': networkData.connections.closeWait,
+      Listening: networkData.connections.listening,
+    },
+  ];
+
+  const COLORS = [
+    '#6366f1', // Established
+    '#f59e42', // Time Wait
+    '#14b8a6', // Close Wait
+    '#60a5fa', // Listening
   ];
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
+    <div className="bg-white rounded-lg shadow p-6 fade-in">
       <h3 className="text-lg font-semibold text-slate-800 mb-4">Network Metrics</h3>
-      
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div className="bg-gray-50 p-4 rounded-lg">
           <p className="text-sm text-gray-600">Total Connections</p>
@@ -37,20 +46,22 @@ const NetworkMetrics: React.FC<NetworkMetricsProps> = ({ networkData, instanceId
           <p className="text-2xl font-bold text-blue-600">{networkData.dns.servers.length}</p>
         </div>
       </div>
-
       <div className="h-64">
         <h4 className="text-sm font-semibold text-gray-600 mb-2">Connection States</h4>
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={connectionData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
+          <BarChart data={connectionData} margin={{ top: 16, right: 24, left: 0, bottom: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
+            <XAxis dataKey="name" stroke="#64748b" />
+            <YAxis stroke="#64748b" />
             <Tooltip formatter={(value: number) => formatNumber(value)} />
-            <Bar dataKey="value" fill="#2563eb" />
+            <Legend />
+            <Bar dataKey="Established" stackId="a" fill={COLORS[0]} isAnimationActive={true} />
+            <Bar dataKey="Time Wait" stackId="a" fill={COLORS[1]} isAnimationActive={true} />
+            <Bar dataKey="Close Wait" stackId="a" fill={COLORS[2]} isAnimationActive={true} />
+            <Bar dataKey="Listening" stackId="a" fill={COLORS[3]} isAnimationActive={true} />
           </BarChart>
         </ResponsiveContainer>
       </div>
-
       {networkData.dns.servers.length > 0 && (
         <div className="mt-6">
           <h4 className="text-sm font-semibold text-gray-600 mb-2">DNS Servers</h4>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { MonitoringData } from '../../types/monitoring';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 
 interface DiskMetricsProps {
   data: MonitoringData['monitoring']['server-info'][string]['storage'];
@@ -23,60 +24,92 @@ const DiskMetrics: React.FC<DiskMetricsProps> = ({ data }) => {
 
   const percentage = Math.round((aggregatedData.used / aggregatedData.total) * 100) || 0;
 
-  const diskData = [
+  const diskPieData = [
     { name: 'Used', value: aggregatedData.used },
     { name: 'Free', value: aggregatedData.free }
   ];
+  const PIE_COLORS = [
+    'url(#diskUsedGradient)',
+    '#e5e7eb'
+  ];
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
+    <div className="bg-white rounded-lg shadow p-6 fade-in">
       <h3 className="text-lg font-semibold text-slate-800 mb-4">Storage Metrics</h3>
-      
-      <div className="grid grid-cols-1 gap-4 mb-6">
-        {data.volumes.map((volume, index) => (
-          <div key={index} className="bg-gray-50 p-4 rounded-lg">
-            <div className="flex justify-between items-center mb-2">
-              <p className="text-sm font-medium text-gray-600">
-                {volume.mountPoint} ({volume.fileSystem})
-              </p>
-              <span className={`px-2 py-1 text-xs rounded ${
-                volume.smart.status === 'OK' ? 'bg-green-100 text-green-800' :
-                'bg-red-100 text-red-800'
-              }`}>
-                {volume.smart.status}
-              </span>
-            </div>
-            <div className="grid grid-cols-3 gap-4">
-              <div>
-                <p className="text-sm text-gray-600">Total</p>
-                <p className="text-lg font-bold text-blue-600">{formatGigaBytes(volume.size.total)}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Used</p>
-                <p className="text-lg font-bold text-blue-600">{formatGigaBytes(volume.size.used)}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Free</p>
-                <p className="text-lg font-bold text-blue-600">{formatGigaBytes(volume.size.free)}</p>
-              </div>
-            </div>
-            <div className="mt-2">
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div 
-                  className={`h-2 rounded-full ${
-                    volume.size.percentage > 90 ? 'bg-red-600' :
-                    volume.size.percentage > 70 ? 'bg-yellow-500' :
-                    'bg-blue-600'
-                  }`}
-                  style={{ width: `${volume.size.percentage}%` }}
-                />
-              </div>
-              <p className="text-sm text-gray-600 mt-1">{volume.size.percentage}% used</p>
-            </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+        <div className="flex flex-col items-center justify-center">
+          <ResponsiveContainer width="100%" height={200}>
+            <PieChart>
+              <defs>
+                <radialGradient id="diskUsedGradient" cx="50%" cy="50%" r="80%">
+                  <stop offset="0%" stopColor="#f59e42" stopOpacity={0.9} />
+                  <stop offset="100%" stopColor="#f59e42" stopOpacity={0.3} />
+                </radialGradient>
+              </defs>
+              <Pie
+                data={diskPieData}
+                cx="50%"
+                cy="50%"
+                innerRadius={60}
+                outerRadius={80}
+                paddingAngle={3}
+                dataKey="value"
+                isAnimationActive={true}
+              >
+                {diskPieData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={PIE_COLORS[index]} stroke="#fff" strokeWidth={2} />
+                ))}
+              </Pie>
+              <Tooltip formatter={(value: number) => `${formatGigaBytes(value as number)}`} />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
+          <div className="mt-2 text-center">
+            <span className="text-lg font-bold text-orange-500">{percentage}%</span>
+            <span className="text-sm text-gray-600 ml-2">used</span>
           </div>
-        ))}
+        </div>
+        <div>
+          {data.volumes.map((volume, index) => (
+            <div key={index} className="bg-gray-50 p-4 rounded-lg mb-4">
+              <div className="flex justify-between items-center mb-2">
+                <p className="text-sm font-medium text-gray-600">
+                  {volume.mountPoint} ({volume.fileSystem})
+                </p>
+                <span className={`px-2 py-1 text-xs rounded ${
+                  volume.smart.status === 'OK' ? 'bg-green-100 text-green-800' :
+                  'bg-red-100 text-red-800'
+                }`}>
+                  {volume.smart.status}
+                </span>
+              </div>
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <p className="text-sm text-gray-600">Total</p>
+                  <p className="text-lg font-bold text-blue-600">{formatGigaBytes(volume.size.total)}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Used</p>
+                  <p className="text-lg font-bold text-blue-600">{formatGigaBytes(volume.size.used)}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Free</p>
+                  <p className="text-lg font-bold text-blue-600">{formatGigaBytes(volume.size.free)}</p>
+                </div>
+              </div>
+              <div className="mt-2">
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div 
+                    className={`h-2 rounded-full bg-gradient-to-r from-orange-400 via-yellow-400 to-blue-400 transition-all duration-300`}
+                    style={{ width: `${volume.size.percentage}%` }}
+                  />
+                </div>
+                <p className="text-sm text-gray-600 mt-1">{volume.size.percentage}% used</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
-
       <div className="mt-6 p-4 bg-gray-50 rounded-lg">
         <h4 className="text-sm font-semibold text-gray-600 mb-4">Total Storage Usage</h4>
         <div className="grid grid-cols-3 gap-4 mb-4">
@@ -95,11 +128,7 @@ const DiskMetrics: React.FC<DiskMetricsProps> = ({ data }) => {
         </div>
         <div className="w-full bg-gray-200 rounded-full h-2.5">
           <div 
-            className={`h-2.5 rounded-full ${
-              percentage > 90 ? 'bg-red-600' :
-              percentage > 70 ? 'bg-yellow-500' :
-              'bg-blue-600'
-            }`}
+            className={`h-2.5 rounded-full bg-gradient-to-r from-orange-400 via-yellow-400 to-blue-400 transition-all duration-300`}
             style={{ width: `${percentage}%` }}
           />
         </div>

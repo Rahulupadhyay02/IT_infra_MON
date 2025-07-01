@@ -1,6 +1,6 @@
 import React from 'react';
 import { MonitoringData } from '../../types/monitoring';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Cell, Line } from 'recharts';
 
 interface CPUMetricsProps {
   data: MonitoringData['monitoring']['server-info'][string]['cpu'];
@@ -14,8 +14,10 @@ const CPUMetrics: React.FC<CPUMetricsProps> = ({ data, instanceId }) => {
     { name: 'Current', value: data.usage.overall }
   ];
 
+  const BAR_COLORS = ['#6366f1', '#14b8a6', '#f59e42'];
+
   return (
-    <div className="bg-white rounded-lg shadow p-6">
+    <div className="bg-white rounded-lg shadow p-6 fade-in">
       <h3 className="text-lg font-semibold text-slate-800 mb-4">CPU Metrics</h3>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div className="bg-gray-50 p-4 rounded-lg">
@@ -31,22 +33,21 @@ const CPUMetrics: React.FC<CPUMetricsProps> = ({ data, instanceId }) => {
           <p className="text-2xl font-bold text-blue-600">{data.usage.loadAverages['5min']}%</p>
         </div>
       </div>
-      
       <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={cpuData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis domain={[0, 100]} />
-            <Tooltip />
-            <Line 
-              type="monotone" 
-              dataKey="value" 
-              stroke="#2563eb" 
-              strokeWidth={2}
-              dot={{ fill: '#2563eb' }}
-            />
-          </LineChart>
+          <BarChart data={cpuData} margin={{ top: 16, right: 24, left: 0, bottom: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
+            <XAxis dataKey="name" stroke="#64748b" />
+            <YAxis domain={[0, 100]} stroke="#64748b" />
+            <Tooltip contentStyle={{ background: 'rgba(255,255,255,0.95)', borderRadius: '0.75rem', border: '1px solid #e0e7ff' }} />
+            <Legend />
+            <Bar dataKey="value" name="CPU Usage (%)" isAnimationActive={true}>
+              {cpuData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={BAR_COLORS[index % BAR_COLORS.length]} />
+              ))}
+            </Bar>
+            <Line type="monotone" dataKey="value" stroke="#f43f5e" strokeWidth={3} dot={{ r: 5, fill: '#f43f5e' }} name="Trend" isAnimationActive={true} />
+          </BarChart>
         </ResponsiveContainer>
       </div>
     </div>

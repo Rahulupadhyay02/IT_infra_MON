@@ -1,6 +1,8 @@
 import React from 'react';
 import { useFirebaseData } from '../../hooks/useFirebaseData';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import {
+  BarChart, Bar, AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Cell
+} from 'recharts';
 import { Activity, Clock, Filter } from 'lucide-react';
 import PageWrapper from './PageWrapper';
 
@@ -43,6 +45,8 @@ const CloudWatchPage: React.FC = () => {
     };
   }).filter((data): data is NonNullable<typeof data> => data !== null);
 
+  const BAR_COLORS = ['#6366f1', '#14b8a6', '#f59e42', '#f43f5e', '#7c3aed', '#0891b2'];
+
   return (
     <PageWrapper title="CloudWatch Metrics">
       <div className="flex justify-end gap-4 mb-6">
@@ -62,20 +66,19 @@ const CloudWatchPage: React.FC = () => {
           <h2 className="text-lg font-semibold text-slate-800 mb-4">CPU Utilization</h2>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={metricsData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#94a3b8" opacity={0.2} />
+              <BarChart data={metricsData} margin={{ top: 16, right: 24, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
                 <XAxis dataKey="timestamp" stroke="#64748b" />
                 <YAxis stroke="#64748b" />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'rgba(255, 255, 255, 0.9)', 
-                    backdropFilter: 'blur(8px)',
-                    border: '1px solid rgba(203, 213, 225, 0.2)',
-                    borderRadius: '0.5rem'
-                  }} 
-                />
-                <Line type="monotone" dataKey="cpu" stroke="#2563eb" strokeWidth={2} dot={false} name="CPU %" />
-              </LineChart>
+                <Tooltip contentStyle={{ background: 'rgba(255,255,255,0.95)', borderRadius: '0.75rem', border: '1px solid #e0e7ff' }} />
+                <Legend />
+                <Bar dataKey="cpu" name="CPU Usage (%)" isAnimationActive={true}>
+                  {metricsData.map((entry, index) => (
+                    <Cell key={`cell-cpu-${index}`} fill={BAR_COLORS[index % BAR_COLORS.length]} />
+                  ))}
+                </Bar>
+                <Line type="monotone" dataKey="cpu" stroke="#f43f5e" strokeWidth={3} dot={{ r: 4, fill: '#f43f5e' }} name="Trend" isAnimationActive={true} />
+              </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
@@ -85,20 +88,29 @@ const CloudWatchPage: React.FC = () => {
           <h2 className="text-lg font-semibold text-slate-800 mb-4">Memory Usage</h2>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={metricsData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#94a3b8" opacity={0.2} />
+              <AreaChart data={metricsData} margin={{ top: 16, right: 24, left: 0, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="memoryGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#14b8a6" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#14b8a6" stopOpacity={0.1}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
                 <XAxis dataKey="timestamp" stroke="#64748b" />
                 <YAxis stroke="#64748b" />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'rgba(255, 255, 255, 0.9)', 
-                    backdropFilter: 'blur(8px)',
-                    border: '1px solid rgba(203, 213, 225, 0.2)',
-                    borderRadius: '0.5rem'
-                  }} 
+                <Tooltip contentStyle={{ background: 'rgba(255,255,255,0.95)', borderRadius: '0.75rem', border: '1px solid #e0e7ff' }} />
+                <Legend />
+                <Area 
+                  type="monotone" 
+                  dataKey="memory" 
+                  stroke="#14b8a6" 
+                  fill="url(#memoryGradient)"
+                  strokeWidth={3}
+                  name="Memory Usage (%)"
+                  dot={false}
+                  isAnimationActive={true}
                 />
-                <Line type="monotone" dataKey="memory" stroke="#7c3aed" strokeWidth={2} dot={false} name="Memory %" />
-              </LineChart>
+              </AreaChart>
             </ResponsiveContainer>
           </div>
         </div>
@@ -108,20 +120,29 @@ const CloudWatchPage: React.FC = () => {
           <h2 className="text-lg font-semibold text-slate-800 mb-4">Disk Usage</h2>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={metricsData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#94a3b8" opacity={0.2} />
+              <AreaChart data={metricsData} margin={{ top: 16, right: 24, left: 0, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="diskGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#f59e42" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#f59e42" stopOpacity={0.1}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
                 <XAxis dataKey="timestamp" stroke="#64748b" />
                 <YAxis stroke="#64748b" />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'rgba(255, 255, 255, 0.9)', 
-                    backdropFilter: 'blur(8px)',
-                    border: '1px solid rgba(203, 213, 225, 0.2)',
-                    borderRadius: '0.5rem'
-                  }} 
+                <Tooltip contentStyle={{ background: 'rgba(255,255,255,0.95)', borderRadius: '0.75rem', border: '1px solid #e0e7ff' }} />
+                <Legend />
+                <Area 
+                  type="monotone" 
+                  dataKey="diskUsage" 
+                  stroke="#f59e42" 
+                  fill="url(#diskGradient)"
+                  strokeWidth={3}
+                  name="Disk Usage (%)"
+                  dot={false}
+                  isAnimationActive={true}
                 />
-                <Line type="monotone" dataKey="diskUsage" stroke="#059669" strokeWidth={2} dot={false} name="Disk %" />
-              </LineChart>
+              </AreaChart>
             </ResponsiveContainer>
           </div>
         </div>
@@ -131,22 +152,15 @@ const CloudWatchPage: React.FC = () => {
           <h2 className="text-lg font-semibold text-slate-800 mb-4">Network Traffic</h2>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={metricsData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#94a3b8" opacity={0.2} />
+              <BarChart data={metricsData} margin={{ top: 16, right: 24, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
                 <XAxis dataKey="timestamp" stroke="#64748b" />
                 <YAxis stroke="#64748b" />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'rgba(255, 255, 255, 0.9)', 
-                    backdropFilter: 'blur(8px)',
-                    border: '1px solid rgba(203, 213, 225, 0.2)',
-                    borderRadius: '0.5rem'
-                  }} 
-                />
+                <Tooltip contentStyle={{ background: 'rgba(255,255,255,0.95)', borderRadius: '0.75rem', border: '1px solid #e0e7ff' }} />
                 <Legend />
-                <Line type="monotone" dataKey="networkIn" stroke="#0891b2" strokeWidth={2} dot={false} name="Connections In" />
-                <Line type="monotone" dataKey="networkOut" stroke="#be123c" strokeWidth={2} dot={false} name="Connections Out" />
-              </LineChart>
+                <Bar dataKey="networkIn" name="Connections In" fill="#0891b2" isAnimationActive={true} />
+                <Bar dataKey="networkOut" name="Connections Out" fill="#f43f5e" isAnimationActive={true} />
+              </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
