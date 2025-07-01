@@ -41,18 +41,18 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <div className="z-10">
+      <div className="fixed top-0 left-0 right-0 z-50 bg-white">
         <TopHeader />
         <MainHeader />
         <NavigationTabs />
       </div>
       
-      <div className="flex flex-1">
-        <div className="bg-gradient-to-b from-slate-800 to-slate-900">
+      <div className="flex flex-1 pt-[160px]">
+        <aside className="fixed left-0 top-[160px] bottom-0 w-64 bg-gradient-to-b from-slate-800 to-slate-900 z-40">
           <Sidebar />
-        </div>
+        </aside>
         
-        <main className="flex-1 p-6 overflow-auto">
+        <main className="flex-1 ml-64 p-6 overflow-auto relative">
           <Suspense fallback={<LoadingSpinner />}>
             {children}
           </Suspense>

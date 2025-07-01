@@ -96,21 +96,21 @@ const LoadBalancersPage: React.FC = () => {
 
         <div className="px-6 py-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div className="bg-slate-50/80 backdrop-blur-sm p-4 rounded-lg shadow-sm">
+            <div id="lb-status-section" className="bg-slate-50/80 backdrop-blur-sm p-4 rounded-lg shadow-sm">
               <h3 className="text-sm font-medium text-slate-800 mb-2">Active Connections</h3>
               <div className="flex items-center justify-between">
                 <Activity className="w-5 h-5 text-blue-500" />
                 <span className="text-2xl font-semibold text-slate-800">{loadBalancer.connections.active}</span>
               </div>
             </div>
-            <div className="bg-slate-50/80 backdrop-blur-sm p-4 rounded-lg shadow-sm">
+            <div id="target-groups-section" className="bg-slate-50/80 backdrop-blur-sm p-4 rounded-lg shadow-sm">
               <h3 className="text-sm font-medium text-slate-800 mb-2">Healthy Targets</h3>
               <div className="flex items-center justify-between">
                 <Server className="w-5 h-5 text-green-500" />
                 <span className="text-2xl font-semibold text-slate-800">{loadBalancer.healthCheck.healthy}/{loadBalancer.targets.length}</span>
               </div>
             </div>
-            <div className="bg-slate-50/80 backdrop-blur-sm p-4 rounded-lg shadow-sm">
+            <div id="listeners-section" className="bg-slate-50/80 backdrop-blur-sm p-4 rounded-lg shadow-sm">
               <h3 className="text-sm font-medium text-slate-800 mb-2">Type</h3>
               <div className="flex items-center justify-between">
                 <Scale className="w-5 h-5 text-purple-500" />
@@ -119,7 +119,7 @@ const LoadBalancersPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="border-t border-gray-200/30 pt-4">
+          <div id="target-groups-section" className="border-t border-gray-200/30 pt-4">
             <h3 className="text-sm font-semibold text-black-600 mb-4">Target Instance</h3>
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200/30">
@@ -159,7 +159,7 @@ const LoadBalancersPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="border-t border-gray-200/30 mt-4 pt-4">
+          <div id="monitoring-section" className="border-t border-gray-200/30 mt-4 pt-4">
             <h3 className="text-sm font-semibold text-black-600 mb-4">Health Check Configuration</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="bg-slate-50/80 backdrop-blur-sm p-3 rounded-lg shadow-sm">

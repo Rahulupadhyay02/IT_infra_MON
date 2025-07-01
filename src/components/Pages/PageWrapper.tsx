@@ -1,4 +1,5 @@
 import React from 'react';
+import commonBg from '../../assets/images/common.avif';
 
 interface PageWrapperProps {
   children: React.ReactNode;
@@ -10,15 +11,15 @@ const PageWrapper: React.FC<PageWrapperProps> = ({ children, title }) => {
     <div className="relative min-h-full">
       {/* Background Image */}
       <div 
-        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
+        className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: 'url("/src/assets/images/common.avif")',
+          backgroundImage: `url(${commonBg})`,
           filter: 'brightness(0.9) contrast(1.1)',
         }}
       />
       
       {/* Content Container */}
-      <div className="relative z-10">
+      <div className="relative z-10 p-6">
         {/* Page Title */}
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-white drop-shadow-lg">
@@ -27,7 +28,7 @@ const PageWrapper: React.FC<PageWrapperProps> = ({ children, title }) => {
         </div>
 
         {/* Page Content */}
-        <div className="space-y-6">
+        <div className="space-y-6 relative">
           {children}
         </div>
       </div>

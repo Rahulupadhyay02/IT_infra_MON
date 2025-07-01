@@ -57,7 +57,7 @@ const AssetInventoryPage: React.FC = () => {
         <div className="px-6 py-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* System Information */}
-            <div className="space-y-4">
+            <div id="system-info-section" className="space-y-4">
               <h3 className="text-sm font-semibold text-black-450 flex items-center gap-2">
                 <Shield className="w-4 h-4 text-blue-500" />
                 System Information
@@ -83,7 +83,7 @@ const AssetInventoryPage: React.FC = () => {
             </div>
 
             {/* CPU Information */}
-            <div className="space-y-4">
+            <div id="cpu-info-section" className="space-y-4">
               <h3 className="text-sm font-semibold text-black-450 flex items-center gap-2">
                 <Cpu className="w-4 h-4 text-blue-500" />
                 CPU Information
@@ -109,7 +109,7 @@ const AssetInventoryPage: React.FC = () => {
             </div>
 
             {/* Memory Information */}
-            <div className="space-y-4">
+            <div id="memory-info-section" className="space-y-4">
               <h3 className="text-sm font-semibold text-black-450 flex items-center gap-2">
                 <CircuitBoard className="w-4 h-4 text-blue-500" />
                 Memory Information
@@ -143,7 +143,7 @@ const AssetInventoryPage: React.FC = () => {
             </div>
 
             {/* Storage Information */}
-            <div className="space-y-4">
+            <div id="storage-info-section" className="space-y-4">
               <h3 className="text-sm font-semibold text-black-450 flex items-center gap-2">
                 <HardDrive className="w-4 h-4 text-blue-500" />
                 Storage Information
@@ -162,7 +162,7 @@ const AssetInventoryPage: React.FC = () => {
             </div>
 
             {/* Network Information */}
-            <div className="space-y-4 md:col-span-2">
+            <div id="network-info-section" className="space-y-4 md:col-span-2">
               <h3 className="text-sm font-semibold text-black-450 flex items-center gap-2">
                 <Network className="w-4 h-4 text-blue-500" />
                 Network Information

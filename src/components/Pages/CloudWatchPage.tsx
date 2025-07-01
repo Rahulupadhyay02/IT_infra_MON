@@ -58,7 +58,7 @@ const CloudWatchPage: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* CPU Usage Chart */}
-        <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200/20 p-6">
+        <div id="cpu-utilization-section" className="bg-white/90 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200/20 p-6">
           <h2 className="text-lg font-semibold text-slate-800 mb-4">CPU Utilization</h2>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
@@ -81,7 +81,7 @@ const CloudWatchPage: React.FC = () => {
         </div>
 
         {/* Memory Usage Chart */}
-        <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200/20 p-6">
+        <div id="memory-usage-section" className="bg-white/90 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200/20 p-6">
           <h2 className="text-lg font-semibold text-slate-800 mb-4">Memory Usage</h2>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
@@ -104,7 +104,7 @@ const CloudWatchPage: React.FC = () => {
         </div>
 
         {/* Disk Usage Chart */}
-        <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200/20 p-6">
+        <div id="disk-usage-section" className="bg-white/90 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200/20 p-6">
           <h2 className="text-lg font-semibold text-slate-800 mb-4">Disk Usage</h2>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
@@ -127,7 +127,7 @@ const CloudWatchPage: React.FC = () => {
         </div>
 
         {/* Network Traffic Chart */}
-        <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200/20 p-6">
+        <div id="network-traffic-section" className="bg-white/90 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200/20 p-6">
           <h2 className="text-lg font-semibold text-slate-800 mb-4">Network Traffic</h2>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
@@ -152,7 +152,7 @@ const CloudWatchPage: React.FC = () => {
         </div>
       </div>
 
-      <div className="bg-white/30 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200/20 p-6 mt-6">
+      <div id="metrics-summary-section" className="bg-white/30 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200/20 p-6 mt-6">
         <h2 className="text-lg font-semibold text-black-100 mb-4">Metrics Summary</h2>
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200/30">

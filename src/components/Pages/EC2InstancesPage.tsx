@@ -72,7 +72,7 @@ const EC2InstancesPage = () => {
         <div className="px-6 py-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* System Information */}
-            <div className="bg-slate-50/80 backdrop-blur-sm p-4 rounded-lg shadow-sm">
+            <div id="system-info-section" className="bg-slate-50/80 backdrop-blur-sm p-4 rounded-lg shadow-sm">
               <h3 className="text-sm font-semibold text-slate-800 mb-4">System Information</h3>
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
@@ -95,7 +95,7 @@ const EC2InstancesPage = () => {
             </div>
 
             {/* Hardware Information */}
-            <div className="bg-slate-50/80 backdrop-blur-sm p-4 rounded-lg shadow-sm">
+            <div id="instance-info-section" className="bg-slate-50/80 backdrop-blur-sm p-4 rounded-lg shadow-sm">
               <h3 className="text-sm font-semibold text-slate-800 mb-4">Hardware Information</h3>
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
@@ -118,7 +118,7 @@ const EC2InstancesPage = () => {
             </div>
 
             {/* Resource Usage */}
-            <div className="bg-slate-50/80 backdrop-blur-sm p-4 rounded-lg shadow-sm">
+            <div id="monitoring-section" className="bg-slate-50/80 backdrop-blur-sm p-4 rounded-lg shadow-sm">
               <h3 className="text-sm font-semibold text-slate-800 mb-4">Resource Usage</h3>
               <div className="space-y-3">
                 <div>
@@ -167,7 +167,7 @@ const EC2InstancesPage = () => {
 
           <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* CPU Details */}
-            <div className="bg-slate-50/80 backdrop-blur-sm p-4 rounded-lg shadow-sm">
+            <div id="cpu-info-section" className="bg-slate-50/80 backdrop-blur-sm p-4 rounded-lg shadow-sm">
               <h3 className="text-sm font-semibold text-slate-800 mb-4">CPU Details</h3>
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
@@ -192,7 +192,7 @@ const EC2InstancesPage = () => {
             </div>
 
             {/* Storage Details */}
-            <div className="bg-slate-50/80 backdrop-blur-sm p-4 rounded-lg shadow-sm">
+            <div id="storage-volumes-section" className="bg-slate-50/80 backdrop-blur-sm p-4 rounded-lg shadow-sm">
               <h3 className="text-sm font-semibold text-slate-800 mb-4">Storage Details</h3>
               <div className="space-y-4">
                 {storage.volumes.map((volume, index) => (

@@ -82,62 +82,64 @@ const SystemHealthPage: React.FC = () => {
       </div>
 
       {/* System Overview */}
-      <div className="bg-white/30 backdrop-blur-sm border border-gray-200/20 rounded-lg p-6 shadow-lg">
-        <div className="flex justify-between items-center mb-5 pb-4 border-b border-gray-200/30">
-          <h3 className="text-lg font-semibold text-black-600">Component Status</h3>
-          <button className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors shadow-sm">
-            <Tool className="w-4 h-4" />
-            Run Health Check
-          </button>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="bg-slate-50/50">
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Component</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Status</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Last Check</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Response Time</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200/30">
-              {healthData.map((component, index) => (
-                <tr key={component.name} className={index % 2 === 0 ? 'bg-white/50' : 'bg-slate-50/50'}>
-                  <td className="px-4 py-3 text-sm text-slate-800 font-medium">{component.name}</td>
-                  <td className="px-4 py-3">
-                    <StatusIndicator status={component.status} />
-                  </td>
-                  <td className="px-4 py-3 text-sm text-slate-700">{component.lastCheck}</td>
-                  <td className="px-4 py-3 text-sm text-slate-700">{component.responseTime}</td>
-                  <td className="px-4 py-3 text-sm">
-                    <button className="text-blue-600 hover:text-blue-800 font-medium">View Details</button>
-                  </td>
+      <div id="system-overview-section">
+        <div id="component-status-section" className="bg-white/30 backdrop-blur-sm border border-gray-200/20 rounded-lg p-6 shadow-lg">
+          <div className="flex justify-between items-center mb-5 pb-4 border-b border-gray-200/30">
+            <h3 className="text-lg font-semibold text-black-600">Component Status</h3>
+            <button className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors shadow-sm">
+              <Tool className="w-4 h-4" />
+              Run Health Check
+            </button>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-slate-50/50">
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Component</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Status</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Last Check</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Response Time</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-gray-200/30">
+                {healthData.map((component, index) => (
+                  <tr key={component.name} className={index % 2 === 0 ? 'bg-white/50' : 'bg-slate-50/50'}>
+                    <td className="px-4 py-3 text-sm text-slate-800 font-medium">{component.name}</td>
+                    <td className="px-4 py-3">
+                      <StatusIndicator status={component.status} />
+                    </td>
+                    <td className="px-4 py-3 text-sm text-slate-700">{component.lastCheck}</td>
+                    <td className="px-4 py-3 text-sm text-slate-700">{component.responseTime}</td>
+                    <td className="px-4 py-3 text-sm">
+                      <button className="text-blue-600 hover:text-blue-800 font-medium">View Details</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
       {/* Metrics Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-        <div className="bg-white/90 backdrop-blur-sm border border-gray-200/20 rounded-lg shadow-lg overflow-hidden">
+        <div id="cpu-metrics-section" className="bg-white/90 backdrop-blur-sm border border-gray-200/20 rounded-lg shadow-lg overflow-hidden">
           <CPUMetrics data={latestData.cpu} instanceId={latestTimestamp} />
         </div>
-        <div className="bg-white/90 backdrop-blur-sm border border-gray-200/20 rounded-lg shadow-lg overflow-hidden">
+        <div id="memory-metrics-section" className="bg-white/90 backdrop-blur-sm border border-gray-200/20 rounded-lg shadow-lg overflow-hidden">
           <MemoryMetrics data={latestData.memory.physical} instanceId={latestTimestamp} />
         </div>
-        <div className="bg-white/90 backdrop-blur-sm border border-gray-200/20 rounded-lg shadow-lg overflow-hidden">
+        <div id="network-metrics-section" className="bg-white/90 backdrop-blur-sm border border-gray-200/20 rounded-lg shadow-lg overflow-hidden">
           <NetworkMetrics networkData={latestData.network} instanceId={latestTimestamp} />
         </div>
-        <div className="bg-white/90 backdrop-blur-sm border border-gray-200/20 rounded-lg shadow-lg overflow-hidden">
+        <div id="disk-metrics-section" className="bg-white/90 backdrop-blur-sm border border-gray-200/20 rounded-lg shadow-lg overflow-hidden">
           <DiskMetrics data={latestData.storage} />
         </div>
       </div>
 
       {/* Services */}
-      <div className="mt-6 bg-white/90 backdrop-blur-sm border border-gray-200/20 rounded-lg shadow-lg overflow-hidden">
+      <div id="services-metrics-section" className="mt-6 bg-white/90 backdrop-blur-sm border border-gray-200/20 rounded-lg shadow-lg overflow-hidden">
         <ServicesMetrics data={latestData.processes.topProcesses.cpu} instanceId={latestTimestamp} />
       </div>
     </PageWrapper>
