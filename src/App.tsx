@@ -23,6 +23,8 @@ const LoadBalancersPage = lazy(() => import('./components/Pages/LoadBalancersPag
 const AssetInventoryPage = lazy(() => import('./components/Pages/AssetInventoryPage'));
 const ScheduledJobsPage = lazy(() => import('./components/Pages/ScheduledJobsPage'));
 const SettingsPage = lazy(() => import('./components/Pages/SettingsPage'));
+const AddAutomationTaskPage = lazy(() => import('./components/Pages/AddAutomationTaskPage'));
+const EditAutomationTaskPage = lazy(() => import('./components/Pages/EditAutomationTaskPage'));
 
 const LoadingSpinner = () => (
   <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -162,6 +164,20 @@ function App() {
           <ProtectedRoute>
             <DashboardLayout>
               <AutomationTasksPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        } />
+        <Route path="/automation-tasks/add" element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <AddAutomationTaskPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        } />
+        <Route path="/automation-tasks/edit/:id" element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <EditAutomationTaskPage />
             </DashboardLayout>
           </ProtectedRoute>
         } />
