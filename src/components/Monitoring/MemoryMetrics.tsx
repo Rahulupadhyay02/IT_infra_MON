@@ -21,7 +21,7 @@ const MemoryMetrics: React.FC<MemoryMetricsProps> = ({ data, swap, virtualMemory
   ];
 
   const COLORS = [
-    'url(#memoryUsedGradient)', // Used
+    '#7F1DFF', // Used
     '#00E6D8', // Buffers
     '#E0E7FF'  // Free
   ];
@@ -86,12 +86,6 @@ const MemoryMetrics: React.FC<MemoryMetricsProps> = ({ data, swap, virtualMemory
       <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
-            <defs>
-              <radialGradient id="memoryUsedGradient" cx="50%" cy="50%" r="80%">
-                <stop offset="0%" stopColor="#7F1DFF" stopOpacity={0.9} />
-                <stop offset="100%" stopColor="#7F1DFF" stopOpacity={0.3} />
-              </radialGradient>
-            </defs>
             <Pie
               data={memoryData}
               cx="50%"

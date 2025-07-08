@@ -25,6 +25,7 @@ const ScheduledJobsPage = lazy(() => import('./components/Pages/ScheduledJobsPag
 const SettingsPage = lazy(() => import('./components/Pages/SettingsPage'));
 const AddAutomationTaskPage = lazy(() => import('./components/Pages/AddAutomationTaskPage'));
 const EditAutomationTaskPage = lazy(() => import('./components/Pages/EditAutomationTaskPage'));
+const ReportPage = lazy(() => import('./components/Pages/Report'));
 
 const LoadingSpinner = () => (
   <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -192,6 +193,13 @@ function App() {
           <ProtectedRoute>
             <DashboardLayout>
               <SettingsPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        } />
+        <Route path="/report" element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <ReportPage />
             </DashboardLayout>
           </ProtectedRoute>
         } />

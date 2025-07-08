@@ -30,21 +30,15 @@ const DiskMetrics: React.FC<DiskMetricsProps> = ({ data, smartDisks }) => {
     { name: 'Free', value: aggregatedData.free }
   ];
   const PIE_COLORS = [
-    'url(#diskUsedGradient)',
+    '#FFB300',
     '#E0E7FF'
   ];
 
   // Add a simple GaugeChart for total disk usage
   const GaugeChart = ({ value, color, label }: { value: number; color: string; label: string }) => (
     <svg width="100%" height="100%" viewBox="0 0 120 60">
-      <defs>
-        <linearGradient id="gaugeGradientDisk" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor={color} stopOpacity="0.8" />
-          <stop offset="100%" stopColor={color} stopOpacity="0.2" />
-        </linearGradient>
-      </defs>
       <path d="M10,60 A50,50 0 0,1 110,60" fill="none" stroke="#E0E7FF" strokeWidth="12" />
-      <path d="M10,60 A50,50 0 0,1 110,60" fill="none" stroke="url(#gaugeGradientDisk)" strokeWidth="12" strokeDasharray={`${Math.PI*50*(value/100)},${Math.PI*50*(1-value/100)}`} />
+      <path d="M10,60 A50,50 0 0,1 110,60" fill="none" stroke={color} strokeWidth="12" strokeDasharray={`${Math.PI*50*(value/100)},${Math.PI*50*(1-value/100)}`} />
       <text x="60" y="40" textAnchor="middle" fontSize="18" fill={color} fontWeight="bold">{value.toFixed(1)}%</text>
       <text x="60" y="55" textAnchor="middle" fontSize="12" fill="#64748B">{label}</text>
     </svg>

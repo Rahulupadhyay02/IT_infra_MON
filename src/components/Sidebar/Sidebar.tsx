@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   Home, Heart, AlertTriangle, Server, BarChart3, 
-  Scale, Ticket, Package, Shield, Zap, Clock, ChevronLeft, ChevronRight 
+  Scale, Ticket, Package, Shield, Zap, Clock, ChevronLeft, ChevronRight, FileText 
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -45,6 +45,12 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
       items: [
         { id: '/automation-tasks', icon: Zap, label: 'Automation Tasks' },
         { id: '/scheduled-jobs', icon: Clock, label: 'Scheduled Jobs' },
+      ]
+    },
+    {
+      title: 'Reports',
+      items: [
+        { id: '/report', icon: FileText, label: 'Reports' },
       ]
     }
   ];
