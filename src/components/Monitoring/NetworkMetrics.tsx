@@ -1,6 +1,6 @@
 import React from 'react';
 import { MonitoringData } from '../../types/monitoring';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, AreaChart, Area } from 'recharts';
 
 interface NetworkMetricsProps {
   networkData: MonitoringData['monitoring']['server-info'][string]['network'];
@@ -23,10 +23,10 @@ const NetworkMetrics: React.FC<NetworkMetricsProps> = ({ networkData, instanceId
   ];
 
   const COLORS = [
-    '#6366f1', // Established
-    '#f59e42', // Time Wait
-    '#14b8a6', // Close Wait
-    '#60a5fa', // Listening
+    '#7F1DFF', // Established
+    '#FFB300', // Time Wait
+    '#00E6D8', // Close Wait
+    '#7C3AED', // Listening
   ];
 
   return (
@@ -49,17 +49,17 @@ const NetworkMetrics: React.FC<NetworkMetricsProps> = ({ networkData, instanceId
       <div className="h-64">
         <h4 className="text-sm font-semibold text-gray-600 mb-2">Connection States</h4>
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={connectionData} margin={{ top: 16, right: 24, left: 0, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
-            <XAxis dataKey="name" stroke="#64748b" />
-            <YAxis stroke="#64748b" />
-            <Tooltip formatter={(value: number) => formatNumber(value)} />
-            <Legend />
-            <Bar dataKey="Established" stackId="a" fill={COLORS[0]} isAnimationActive={true} />
-            <Bar dataKey="Time Wait" stackId="a" fill={COLORS[1]} isAnimationActive={true} />
-            <Bar dataKey="Close Wait" stackId="a" fill={COLORS[2]} isAnimationActive={true} />
-            <Bar dataKey="Listening" stackId="a" fill={COLORS[3]} isAnimationActive={true} />
-          </BarChart>
+          <AreaChart data={connectionData} margin={{ top: 16, right: 24, left: 0, bottom: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#E0E7FF" />
+            <XAxis dataKey="name" stroke="#64748B" />
+            <YAxis stroke="#64748B" />
+            <Tooltip formatter={(value: number) => formatNumber(value)} contentStyle={{ background: 'rgba(30,41,59,0.95)', color: '#fff', borderRadius: '0.75rem', border: '1px solid #7F1DFF', boxShadow: '0 4px 24px #7F1DFF22' }} labelStyle={{ color: '#7F1DFF' }} />
+            <Legend iconType="circle" wrapperStyle={{ color: '#64748B', fontWeight: 600 }} />
+            <Area type="monotone" dataKey="Established" stackId="a" stroke={COLORS[0]} fill={COLORS[0]} fillOpacity={0.7} />
+            <Area type="monotone" dataKey="Time Wait" stackId="a" stroke={COLORS[1]} fill={COLORS[1]} fillOpacity={0.7} />
+            <Area type="monotone" dataKey="Close Wait" stackId="a" stroke={COLORS[2]} fill={COLORS[2]} fillOpacity={0.7} />
+            <Area type="monotone" dataKey="Listening" stackId="a" stroke={COLORS[3]} fill={COLORS[3]} fillOpacity={0.7} />
+          </AreaChart>
         </ResponsiveContainer>
       </div>
       {networkData.dns.servers.length > 0 && (

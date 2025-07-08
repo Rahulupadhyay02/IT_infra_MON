@@ -11,8 +11,7 @@ const NavigationTabs = () => {
     { id: 'overview', label: 'Overview', path: '/' },
     { id: 'monitoring', label: 'Monitoring', path: '/system-health' },
     { id: 'infrastructure', label: 'Infrastructure', path: '/ec2-instances' },
-    { id: 'automation', label: 'Automation', path: '/automation-tasks' },
-    { id: 'settings', label: 'Settings', path: '/settings' }
+    { id: 'automation', label: 'Automation', path: '/automation-tasks' }
   ];
 
   const handleTabChange = (tab: string, path: string) => {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { MonitoringData } from '../../types/monitoring';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Cell, Line } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Cell, Line, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, LineChart } from 'recharts';
 
 interface CPUMetricsProps {
   data: MonitoringData['monitoring']['server-info'][string]['cpu'];
@@ -14,7 +14,7 @@ const CPUMetrics: React.FC<CPUMetricsProps> = ({ data, instanceId }) => {
     { name: 'Current', value: data.usage.overall }
   ];
 
-  const BAR_COLORS = ['#6366f1', '#14b8a6', '#f59e42'];
+  const AI_BAR_COLORS = ['#7F1DFF', '#00E6D8', '#FFB300'];
 
   return (
     <div className="bg-white rounded-lg shadow p-6 fade-in">
@@ -35,19 +35,14 @@ const CPUMetrics: React.FC<CPUMetricsProps> = ({ data, instanceId }) => {
       </div>
       <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={cpuData} margin={{ top: 16, right: 24, left: 0, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
-            <XAxis dataKey="name" stroke="#64748b" />
-            <YAxis domain={[0, 100]} stroke="#64748b" />
-            <Tooltip contentStyle={{ background: 'rgba(255,255,255,0.95)', borderRadius: '0.75rem', border: '1px solid #e0e7ff' }} />
-            <Legend />
-            <Bar dataKey="value" name="CPU Usage (%)" isAnimationActive={true}>
-              {cpuData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={BAR_COLORS[index % BAR_COLORS.length]} />
-              ))}
-            </Bar>
-            <Line type="monotone" dataKey="value" stroke="#f43f5e" strokeWidth={3} dot={{ r: 5, fill: '#f43f5e' }} name="Trend" isAnimationActive={true} />
-          </BarChart>
+          <LineChart data={cpuData} margin={{ top: 16, right: 24, left: 0, bottom: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#E0E7FF" />
+            <XAxis dataKey="name" stroke="#64748B" />
+            <YAxis domain={[0, 100]} stroke="#64748B" />
+            <Tooltip contentStyle={{ background: 'rgba(30,41,59,0.95)', color: '#fff', borderRadius: '0.75rem', border: '1px solid #7F1DFF', boxShadow: '0 4px 24px #7F1DFF22' }} labelStyle={{ color: '#7F1DFF' }} />
+            <Legend iconType="circle" wrapperStyle={{ color: '#64748B', fontWeight: 600 }} />
+            <Line type="monotone" dataKey="value" stroke="#7F1DFF" strokeWidth={3} dot={{ r: 6, fill: '#7F1DFF', stroke: '#fff', strokeWidth: 2 }} name="CPU Usage (%)" isAnimationActive={true} label={{ position: 'top', fill: '#7F1DFF', fontWeight: 700, fontSize: 12, formatter: (v: number) => `${v}%` }} />
+          </LineChart>
         </ResponsiveContainer>
       </div>
       {/* Per-Core Usage Chart */}
@@ -56,21 +51,17 @@ const CPUMetrics: React.FC<CPUMetricsProps> = ({ data, instanceId }) => {
           <h4 className="text-md font-semibold text-slate-700 mb-2">Per-Core Usage</h4>
           <div className="h-56">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={data.perCore.map(core => ({
-                id: `Core ${core.id}`,
-                usage: core.usage,
-                frequency: core.frequency
-              }))} margin={{ top: 8, right: 24, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
-                <XAxis dataKey="id" stroke="#64748b" />
-                <YAxis domain={[0, 100]} stroke="#64748b" />
-                <Tooltip formatter={(value, name, props) => [`${value}% @ ${props.payload.frequency} MHz`, 'Usage']} />
-                <Bar dataKey="usage" name="Usage (%)" isAnimationActive={true}>
-                  {data.perCore.map((core, idx) => (
-                    <Cell key={`core-bar-${idx}`} fill={BAR_COLORS[idx % BAR_COLORS.length]} />
-                  ))}
-                </Bar>
-              </BarChart>
+              <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data.perCore.map(core => ({
+                core: `Core ${core.id}`,
+                usage: core.usage
+              }))}>
+                <PolarGrid />
+                <PolarAngleAxis dataKey="core" />
+                <PolarRadiusAxis angle={30} domain={[0, 100]} />
+                <Radar name="Usage (%)" dataKey="usage" stroke="#00E6D8" fill="#00E6D8" fillOpacity={0.6} />
+                <Tooltip formatter={(value) => `${value}%`} />
+                <Legend />
+              </RadarChart>
             </ResponsiveContainer>
           </div>
         </div>

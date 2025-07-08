@@ -22,14 +22,14 @@ const MemoryMetrics: React.FC<MemoryMetricsProps> = ({ data, swap, virtualMemory
 
   const COLORS = [
     'url(#memoryUsedGradient)', // Used
-    '#60a5fa', // Buffers
-    '#e5e7eb'  // Free
+    '#00E6D8', // Buffers
+    '#E0E7FF'  // Free
   ];
 
   const formatGigaBytes = (value: number) => {
-    if (!value || isNaN(value)) return '0.00 GB';
-    const gbValue = value / 100;
-    return `${gbValue.toFixed(2)} GB`;
+    if (!value || isNaN(value)) return '0.0 MB';
+    const gbValue = value < 1024 ? value : (value % 1024); // Convert to GB if value is in MB
+    return `${gbValue.toFixed(2)} MB`;
   };
 
   // Swap memory chart data
@@ -39,7 +39,7 @@ const MemoryMetrics: React.FC<MemoryMetricsProps> = ({ data, swap, virtualMemory
     { name: 'Used', value: swapUsedPercent },
     { name: 'Free', value: swapFreePercent }
   ];
-  const SWAP_COLORS = ['#f59e42', '#e5e7eb'];
+  const SWAP_COLORS = ['#FFB300', '#E0E7FF'];
 
   // Virtual memory chart data
   const virtUsedPercent = (virtualMemory.used / virtualMemory.total) * 100;
@@ -48,7 +48,23 @@ const MemoryMetrics: React.FC<MemoryMetricsProps> = ({ data, swap, virtualMemory
     { name: 'Used', value: virtUsedPercent },
     { name: 'Free', value: virtFreePercent }
   ];
-  const VIRT_COLORS = ['#7c3aed', '#e5e7eb'];
+  const VIRT_COLORS = ['#7C3AED', '#E0E7FF'];
+
+  // Add a simple GaugeChart component for swap and virtual memory
+  const GaugeChart = ({ value, color, label }: { value: number; color: string; label: string }) => (
+    <svg width="100%" height="100%" viewBox="0 0 120 60">
+      <defs>
+        <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor={color} stopOpacity="0.8" />
+          <stop offset="100%" stopColor={color} stopOpacity="0.2" />
+        </linearGradient>
+      </defs>
+      <path d="M10,60 A50,50 0 0,1 110,60" fill="none" stroke="#E0E7FF" strokeWidth="12" />
+      <path d="M10,60 A50,50 0 0,1 110,60" fill="none" stroke="url(#gaugeGradient)" strokeWidth="12" strokeDasharray={`${Math.PI*50*(value/100)},${Math.PI*50*(1-value/100)}`} />
+      <text x="60" y="40" textAnchor="middle" fontSize="18" fill={color} fontWeight="bold">{value.toFixed(1)}%</text>
+      <text x="60" y="55" textAnchor="middle" fontSize="12" fill="#64748B">{label}</text>
+    </svg>
+  );
 
   return (
     <div className="bg-white rounded-lg shadow p-6 fade-in">
@@ -72,26 +88,27 @@ const MemoryMetrics: React.FC<MemoryMetricsProps> = ({ data, swap, virtualMemory
           <PieChart>
             <defs>
               <radialGradient id="memoryUsedGradient" cx="50%" cy="50%" r="80%">
-                <stop offset="0%" stopColor="#6366f1" stopOpacity={0.9} />
-                <stop offset="100%" stopColor="#6366f1" stopOpacity={0.3} />
+                <stop offset="0%" stopColor="#7F1DFF" stopOpacity={0.9} />
+                <stop offset="100%" stopColor="#7F1DFF" stopOpacity={0.3} />
               </radialGradient>
             </defs>
             <Pie
               data={memoryData}
               cx="50%"
               cy="50%"
-              innerRadius={60}
+              innerRadius={40}
               outerRadius={80}
               paddingAngle={5}
               dataKey="value"
               isAnimationActive={true}
+              label={({ name, value }) => `${name}: ${value.toFixed(1)}%`}
             >
               {memoryData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index]} stroke="#fff" strokeWidth={2} />
+                <Cell key={`cell-${index}`} fill={COLORS[index]} stroke="#fff" strokeWidth={2} filter="url(#memoryShadow)" />
               ))}
             </Pie>
-            <Tooltip formatter={(value: number) => `${value.toFixed(1)}%`} />
-            <Legend />
+            <Tooltip formatter={(value: number) => `${value.toFixed(1)}%`} contentStyle={{ background: 'rgba(30,41,59,0.95)', color: '#fff', borderRadius: '0.75rem', border: '1px solid #7F1DFF', boxShadow: '0 4px 24px #7F1DFF22' }} />
+            <Legend iconType="circle" wrapperStyle={{ color: '#64748B', fontWeight: 600 }} />
           </PieChart>
         </ResponsiveContainer>
       </div>
@@ -111,27 +128,8 @@ const MemoryMetrics: React.FC<MemoryMetricsProps> = ({ data, swap, virtualMemory
       {/* Swap Memory Chart */}
       <div className="mt-10">
         <h4 className="text-md font-semibold text-orange-600 mb-2">Swap Memory Usage</h4>
-        <div className="h-48">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={swapData}
-                cx="50%"
-                cy="50%"
-                innerRadius={50}
-                outerRadius={70}
-                paddingAngle={4}
-                dataKey="value"
-                isAnimationActive={true}
-              >
-                {swapData.map((entry, idx) => (
-                  <Cell key={`swap-cell-${idx}`} fill={SWAP_COLORS[idx]} stroke="#fff" strokeWidth={2} />
-                ))}
-              </Pie>
-              <Tooltip formatter={(value: number) => `${value.toFixed(1)}%`} />
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
+        <div className="h-48 flex items-center justify-center">
+          <GaugeChart value={swapUsedPercent} color="#FFB300" label="Swap Used" />
         </div>
         <div className="flex justify-center gap-6 mt-2">
           <div className="flex flex-col items-center text-sm text-gray-700">
@@ -144,27 +142,8 @@ const MemoryMetrics: React.FC<MemoryMetricsProps> = ({ data, swap, virtualMemory
       {/* Virtual Memory Chart */}
       <div className="mt-10">
         <h4 className="text-md font-semibold text-purple-600 mb-2">Virtual Memory Usage</h4>
-        <div className="h-48">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={virtData}
-                cx="50%"
-                cy="50%"
-                innerRadius={50}
-                outerRadius={70}
-                paddingAngle={4}
-                dataKey="value"
-                isAnimationActive={true}
-              >
-                {virtData.map((entry, idx) => (
-                  <Cell key={`virt-cell-${idx}`} fill={VIRT_COLORS[idx]} stroke="#fff" strokeWidth={2} />
-                ))}
-              </Pie>
-              <Tooltip formatter={(value: number) => `${value.toFixed(1)}%`} />
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
+        <div className="h-48 flex items-center justify-center">
+          <GaugeChart value={virtUsedPercent} color="#7C3AED" label="Virtual Used" />
         </div>
         <div className="flex justify-center gap-6 mt-2">
           <div className="flex flex-col items-center text-sm text-gray-700">

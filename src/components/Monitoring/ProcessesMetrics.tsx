@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
 import { MonitoringData } from '../../types/monitoring';
 
 interface ProcessesMetricsProps {
@@ -9,7 +9,7 @@ interface ProcessesMetricsProps {
   instanceId: string;
 }
 
-const COLORS = ['#6366f1', '#f59e42', '#14b8a6', '#f43f5e'];
+const COLORS = ['#7F1DFF', '#FFB300', '#00E6D8', '#F43F5E'];
 
 const ProcessesMetrics: React.FC<ProcessesMetricsProps> = ({ summary, topCPU, topMemory, instanceId }) => {
   const [sortBy, setSortBy] = useState<'cpu_percent' | 'memory_percent'>('cpu_percent');
@@ -55,25 +55,14 @@ const ProcessesMetrics: React.FC<ProcessesMetricsProps> = ({ summary, topCPU, to
           <h4 className="text-md font-semibold text-slate-700 mb-2">Process States</h4>
           <div className="h-48 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={summaryData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={40}
-                  outerRadius={70}
-                  paddingAngle={3}
-                  dataKey="value"
-                  isAnimationActive={true}
-                  label={false}
-                >
-                  {summaryData.map((entry, idx) => (
-                    <Cell key={`cell-${idx}`} fill={COLORS[idx % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip formatter={(value: number, name: string) => [`${value}`, name]} />
+              <RadarChart cx="50%" cy="50%" outerRadius="80%" data={summaryData}>
+                <PolarGrid />
+                <PolarAngleAxis dataKey="name" />
+                <PolarRadiusAxis angle={30} domain={[0, Math.max(...summaryData.map(d => d.value), 1)]} />
+                <Radar name="Processes" dataKey="value" stroke="#7F1DFF" fill="#7F1DFF" fillOpacity={0.6} />
+                <Tooltip formatter={(value) => `${value}`} />
                 <Legend />
-              </PieChart>
+              </RadarChart>
             </ResponsiveContainer>
           </div>
           <div className="flex flex-col gap-1 mt-2 text-sm text-gray-700">

@@ -31,43 +31,59 @@ const DiskMetrics: React.FC<DiskMetricsProps> = ({ data, smartDisks }) => {
   ];
   const PIE_COLORS = [
     'url(#diskUsedGradient)',
-    '#e5e7eb'
+    '#E0E7FF'
   ];
+
+  // Add a simple GaugeChart for total disk usage
+  const GaugeChart = ({ value, color, label }: { value: number; color: string; label: string }) => (
+    <svg width="100%" height="100%" viewBox="0 0 120 60">
+      <defs>
+        <linearGradient id="gaugeGradientDisk" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor={color} stopOpacity="0.8" />
+          <stop offset="100%" stopColor={color} stopOpacity="0.2" />
+        </linearGradient>
+      </defs>
+      <path d="M10,60 A50,50 0 0,1 110,60" fill="none" stroke="#E0E7FF" strokeWidth="12" />
+      <path d="M10,60 A50,50 0 0,1 110,60" fill="none" stroke="url(#gaugeGradientDisk)" strokeWidth="12" strokeDasharray={`${Math.PI*50*(value/100)},${Math.PI*50*(1-value/100)}`} />
+      <text x="60" y="40" textAnchor="middle" fontSize="18" fill={color} fontWeight="bold">{value.toFixed(1)}%</text>
+      <text x="60" y="55" textAnchor="middle" fontSize="12" fill="#64748B">{label}</text>
+    </svg>
+  );
+
+  // Add a simple Treemap for per-volume usage
+  const Treemap = ({ data }: { data: { name: string; value: number; color: string }[] }) => {
+    // Simple horizontal treemap layout
+    const total = data.reduce((sum, d) => sum + d.value, 0);
+    let x = 0;
+    return (
+      <svg width="100%" height="60">
+        {data.map((d, i) => {
+          const width = total ? (d.value / total) * 400 : 0;
+          const rect = <rect key={d.name} x={x} y={10} width={width} height={40} fill={d.color} rx={6} />;
+          const label = <text key={d.name + '-label'} x={x + width / 2} y={35} textAnchor="middle" fill="#fff" fontWeight="bold" fontSize="14">{d.name}</text>;
+          x += width;
+          return [rect, label];
+        })}
+      </svg>
+    );
+  };
 
   return (
     <div className="bg-white rounded-lg shadow p-6 fade-in">
       <h3 className="text-lg font-semibold text-slate-800 mb-4">Storage Metrics</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
         <div className="flex flex-col items-center justify-center">
-          <ResponsiveContainer width="100%" height={200}>
-            <PieChart>
-              <defs>
-                <radialGradient id="diskUsedGradient" cx="50%" cy="50%" r="80%">
-                  <stop offset="0%" stopColor="#f59e42" stopOpacity={0.9} />
-                  <stop offset="100%" stopColor="#f59e42" stopOpacity={0.3} />
-                </radialGradient>
-              </defs>
-              <Pie
-                data={diskPieData}
-                cx="50%"
-                cy="50%"
-                innerRadius={60}
-                outerRadius={80}
-                paddingAngle={3}
-                dataKey="value"
-                isAnimationActive={true}
-              >
-                {diskPieData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={PIE_COLORS[index]} stroke="#fff" strokeWidth={2} />
-                ))}
-              </Pie>
-              <Tooltip formatter={(value: number) => `${formatGigaBytes(value as number)}`} />
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
-          <div className="mt-2 text-center">
-            <span className="text-lg font-bold text-orange-500">{percentage}%</span>
-            <span className="text-sm text-gray-600 ml-2">used</span>
+          <div className="w-full flex flex-col items-center">
+            <div className="w-full mb-2">
+              <Treemap data={data.volumes.map((volume, idx) => ({
+                name: volume.mountPoint,
+                value: volume.size.used,
+                color: idx % 2 === 0 ? '#FFB300' : '#7F1DFF'
+              }))} />
+            </div>
+            <div className="w-2/3 h-20 flex items-center justify-center">
+              <GaugeChart value={percentage} color="#FFB300" label="Total Used" />
+            </div>
           </div>
         </div>
         <div>

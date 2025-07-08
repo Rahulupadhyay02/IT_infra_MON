@@ -95,9 +95,26 @@ const OverviewPage: React.FC = () => {
 
   const systemHealth = getSystemHealth();
 
+  // Calculate a composite health score (0-100)
+  const getHealthScore = () => {
+    let score = 100;
+    if (metrics.cpu > 90) score -= 30;
+    else if (metrics.cpu > 80) score -= 15;
+    if (metrics.memory > 90) score -= 30;
+    else if (metrics.memory > 80) score -= 15;
+    if (metrics.disk > 90) score -= 30;
+    else if (metrics.disk > 80) score -= 15;
+    if (systemHealth.webServer !== 'healthy') score -= 10;
+    if (systemHealth.database !== 'healthy') score -= 10;
+    if (systemHealth.storage !== 'healthy') score -= 10;
+    if (systemHealth.network !== 'healthy') score -= 10;
+    return Math.max(score, 0);
+  };
+  const healthScore = getHealthScore();
+
   return (
     <PageWrapper title="Infrastructure Overview">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5 mb-6">
         <MetricCard 
           value={metrics.processes} 
           label="Active Processes" 
@@ -118,6 +135,11 @@ const OverviewPage: React.FC = () => {
           label="Storage Volumes" 
           trend={{ direction: 'up', value: `${latestData.storage.volumes.filter(v => v.smart.status === 'OK').length} healthy` }}
         />
+        <MetricCard 
+          value={healthScore} 
+          label="System Health Score" 
+          trend={{ direction: healthScore >= 80 ? 'up' : 'down', value: healthScore >= 80 ? 'Healthy' : healthScore >= 60 ? 'Warning' : 'Critical' }}
+        />
       </div>
 
       <div className="bg-white/90 backdrop-blur-sm border border-gray-200/20 rounded-lg p-6 mb-6 shadow-lg">
@@ -134,7 +156,7 @@ const OverviewPage: React.FC = () => {
           </div>
         </div>
         <div className="bg-gray-50/50 backdrop-blur-sm rounded-lg p-4">
-          <SystemChart data={historicalData} />
+          <SystemChart data={historicalData} showThresholds />
         </div>
       </div>
 

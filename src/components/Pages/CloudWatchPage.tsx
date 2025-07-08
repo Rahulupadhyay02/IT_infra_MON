@@ -46,7 +46,19 @@ const CloudWatchPage: React.FC = () => {
     };
   }).filter((data): data is NonNullable<typeof data> => data !== null);
 
-  const BAR_COLORS = ['#6366f1', '#14b8a6', '#f59e42', '#f43f5e', '#7c3aed', '#0891b2'];
+  const AI_BAR_COLORS = ['#7F1DFF', '#00E6D8', '#FFB300', '#F43F5E', '#7C3AED', '#0891B2'];
+  const AI_GRADIENTS = (
+    <defs>
+      <linearGradient id="memoryGradient" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="5%" stopColor="#00E6D8" stopOpacity={0.8}/>
+        <stop offset="95%" stopColor="#00E6D8" stopOpacity={0.1}/>
+      </linearGradient>
+      <linearGradient id="diskGradient" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="5%" stopColor="#FFB300" stopOpacity={0.8}/>
+        <stop offset="95%" stopColor="#FFB300" stopOpacity={0.1}/>
+      </linearGradient>
+    </defs>
+  );
 
   return (
     <PageWrapper title="CloudWatch Metrics">
@@ -68,17 +80,17 @@ const CloudWatchPage: React.FC = () => {
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={metricsData} margin={{ top: 16, right: 24, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
-                <XAxis dataKey="indexLabel" stroke="#64748b" />
-                <YAxis stroke="#64748b" />
-                <Tooltip contentStyle={{ background: 'rgba(255,255,255,0.95)', borderRadius: '0.75rem', border: '1px solid #e0e7ff' }} />
-                <Legend />
-                <Bar dataKey="cpu" name="CPU Usage (%)" isAnimationActive={true}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#E0E7FF" />
+                <XAxis dataKey="indexLabel" stroke="#64748B" />
+                <YAxis stroke="#64748B" />
+                <Tooltip contentStyle={{ background: 'rgba(30,41,59,0.95)', color: '#fff', borderRadius: '0.75rem', border: '1px solid #7F1DFF', boxShadow: '0 4px 24px #7F1DFF22' }} labelStyle={{ color: '#7F1DFF' }} />
+                <Legend iconType="circle" wrapperStyle={{ color: '#64748B', fontWeight: 600 }} />
+                <Bar dataKey="cpu" name="CPU Usage (%)" isAnimationActive={true} label={{ position: 'top', fill: '#7F1DFF', fontWeight: 700, fontSize: 12, formatter: (v: number) => `${v}%` }}>
                   {metricsData.map((entry, index) => (
-                    <Cell key={`cell-cpu-${index}`} fill={BAR_COLORS[index % BAR_COLORS.length]} />
+                    <Cell key={`cell-cpu-${index}`} fill={AI_BAR_COLORS[index % AI_BAR_COLORS.length]} filter="url(#cpuShadow)" />
                   ))}
                 </Bar>
-                <Line type="monotone" dataKey="cpu" stroke="#f43f5e" strokeWidth={3} dot={{ r: 4, fill: '#f43f5e' }} name="Trend" isAnimationActive={true} />
+                <Line type="monotone" dataKey="cpu" stroke="#F43F5E" strokeWidth={3} dot={{ r: 4, fill: '#F43F5E' }} name="Trend" isAnimationActive={true} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -90,26 +102,22 @@ const CloudWatchPage: React.FC = () => {
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={metricsData} margin={{ top: 16, right: 24, left: 0, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="memoryGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#14b8a6" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#14b8a6" stopOpacity={0.1}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
-                <XAxis dataKey="indexLabel" stroke="#64748b" />
-                <YAxis stroke="#64748b" />
-                <Tooltip contentStyle={{ background: 'rgba(255,255,255,0.95)', borderRadius: '0.75rem', border: '1px solid #e0e7ff' }} />
-                <Legend />
+                {AI_GRADIENTS}
+                <CartesianGrid strokeDasharray="3 3" stroke="#E0E7FF" />
+                <XAxis dataKey="indexLabel" stroke="#64748B" />
+                <YAxis stroke="#64748B" />
+                <Tooltip contentStyle={{ background: 'rgba(30,41,59,0.95)', color: '#fff', borderRadius: '0.75rem', border: '1px solid #00E6D8', boxShadow: '0 4px 24px #00E6D822' }} labelStyle={{ color: '#00E6D8' }} />
+                <Legend iconType="circle" wrapperStyle={{ color: '#64748B', fontWeight: 600 }} />
                 <Area 
                   type="monotone" 
                   dataKey="memory" 
-                  stroke="#14b8a6" 
+                  stroke="#00E6D8" 
                   fill="url(#memoryGradient)"
                   strokeWidth={3}
                   name="Memory Usage (%)"
-                  dot={false}
+                  dot={{ r: 4, fill: '#00E6D8', stroke: '#fff', strokeWidth: 2, filter: 'drop-shadow(0 0 6px #00E6D888)' }}
                   isAnimationActive={true}
+                  label={{ position: 'top', fill: '#00E6D8', fontWeight: 700, fontSize: 12, formatter: (v: number) => `${v}%` }}
                 />
               </AreaChart>
             </ResponsiveContainer>
@@ -122,26 +130,22 @@ const CloudWatchPage: React.FC = () => {
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={metricsData} margin={{ top: 16, right: 24, left: 0, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="diskGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#f59e42" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#f59e42" stopOpacity={0.1}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
-                <XAxis dataKey="indexLabel" stroke="#64748b" />
-                <YAxis stroke="#64748b" />
-                <Tooltip contentStyle={{ background: 'rgba(255,255,255,0.95)', borderRadius: '0.75rem', border: '1px solid #e0e7ff' }} />
-                <Legend />
+                {AI_GRADIENTS}
+                <CartesianGrid strokeDasharray="3 3" stroke="#E0E7FF" />
+                <XAxis dataKey="indexLabel" stroke="#64748B" />
+                <YAxis stroke="#64748B" />
+                <Tooltip contentStyle={{ background: 'rgba(30,41,59,0.95)', color: '#fff', borderRadius: '0.75rem', border: '1px solid #FFB300', boxShadow: '0 4px 24px #FFB30022' }} labelStyle={{ color: '#FFB300' }} />
+                <Legend iconType="circle" wrapperStyle={{ color: '#64748B', fontWeight: 600 }} />
                 <Area 
                   type="monotone" 
                   dataKey="diskUsage" 
-                  stroke="#f59e42" 
+                  stroke="#FFB300" 
                   fill="url(#diskGradient)"
                   strokeWidth={3}
                   name="Disk Usage (%)"
-                  dot={false}
+                  dot={{ r: 4, fill: '#FFB300', stroke: '#fff', strokeWidth: 2, filter: 'drop-shadow(0 0 6px #FFB30088)' }}
                   isAnimationActive={true}
+                  label={{ position: 'top', fill: '#FFB300', fontWeight: 700, fontSize: 12, formatter: (v: number) => `${v}%` }}
                 />
               </AreaChart>
             </ResponsiveContainer>
@@ -154,13 +158,13 @@ const CloudWatchPage: React.FC = () => {
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={metricsData} margin={{ top: 16, right: 24, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
-                <XAxis dataKey="indexLabel" stroke="#64748b" />
-                <YAxis stroke="#64748b" />
-                <Tooltip contentStyle={{ background: 'rgba(255,255,255,0.95)', borderRadius: '0.75rem', border: '1px solid #e0e7ff' }} />
-                <Legend />
-                <Bar dataKey="networkIn" name="Connections In" fill="#0891b2" isAnimationActive={true} />
-                <Bar dataKey="networkOut" name="Connections Out" fill="#f43f5e" isAnimationActive={true} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#E0E7FF" />
+                <XAxis dataKey="indexLabel" stroke="#64748B" />
+                <YAxis stroke="#64748B" />
+                <Tooltip contentStyle={{ background: 'rgba(30,41,59,0.95)', color: '#fff', borderRadius: '0.75rem', border: '1px solid #0891B2', boxShadow: '0 4px 24px #0891B222' }} labelStyle={{ color: '#0891B2' }} />
+                <Legend iconType="circle" wrapperStyle={{ color: '#64748B', fontWeight: 600 }} />
+                <Bar dataKey="networkIn" name="Connections In" fill="#0891B2" isAnimationActive={true} label={{ position: 'top', fill: '#0891B2', fontWeight: 700, fontSize: 12 }} />
+                <Bar dataKey="networkOut" name="Connections Out" fill="#F43F5E" isAnimationActive={true} label={{ position: 'top', fill: '#F43F5E', fontWeight: 700, fontSize: 12 }} />
               </BarChart>
             </ResponsiveContainer>
           </div>
