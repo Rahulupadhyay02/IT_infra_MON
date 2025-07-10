@@ -316,10 +316,10 @@ const AssetInventoryPage: React.FC = () => {
     return (
       <PageWrapper title={`Asset: ${selectedAsset?.name || selectedAsset?.assetId}`}>
         <button
-          className="flex items-center gap-2 mb-4 text-blue-600 hover:text-blue-800 font-medium"
+          className="flex items-center gap-2 mb-4 text-black bg-white  hover:text-blue-200 font-medium"
           onClick={() => setSelectedAssetId(null)}
         >
-          <ArrowLeft className="w-4 h-4" /> Back
+          <ArrowLeft className="w-7 h-4" /> Back...
         </button>
         <div className="bg-white/30 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200/20">
           <div className="px-6 py-4 border-b border-gray-200/30">
@@ -404,19 +404,15 @@ const AssetInventoryPage: React.FC = () => {
               </div>
 
               {/* Unique EC2 field: Firewall Status */}
-              {firewall && (
-                <div id="firewall-status-section" className="space-y-4">
-                  <h3 className="text-sm font-semibold text-black-450 flex items-center gap-2">
-                    <Shield className="w-4 h-4 text-blue-500" />
-                    Firewall Status
-                  </h3>
-                  <div className="bg-slate-50/80 backdrop-blur-sm rounded-lg p-4 space-y-3 shadow-sm flex flex-wrap gap-3">
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold shadow-sm ${firewall.domain === 'ON' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>Domain: {firewall.domain}</span>
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold shadow-sm ${firewall.private === 'ON' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>Private: {firewall.private}</span>
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold shadow-sm ${firewall.public === 'ON' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>Public: {firewall.public}</span>
-                  </div>
-                </div>
-              )}
+            {/* Firewall Status */}
+            <div id="firewall-status-section" className="bg-slate-50/80 backdrop-blur-sm p-4 rounded-lg shadow-sm flex flex-col items-start">
+              <h3 className="text-sm font-semibold text-slate-800 mb-4">Firewall Status</h3>
+              <div className="flex flex-wrap gap-3">
+                <span className={`px-3 py-1 rounded-full text-xs font-semibold shadow-sm ${serverInfo.firewall.domain === 'ON' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>Domain: {serverInfo.firewall.domain}</span>
+                <span className={`px-3 py-1 rounded-full text-xs font-semibold shadow-sm ${serverInfo.firewall.private === 'ON' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>Private: {serverInfo.firewall.private}</span>
+                <span className={`px-3 py-1 rounded-full text-xs font-semibold shadow-sm ${serverInfo.firewall.public === 'ON' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>Public: {serverInfo.firewall.public}</span>
+              </div>
+            </div>
 
               {/* CPU Information */}
               <div id="cpu-info-section" className="space-y-4">
@@ -483,25 +479,83 @@ const AssetInventoryPage: React.FC = () => {
                   </div>
                 </div>
               </div>
-
-              {/* Storage Information */}
-              <div id="storage-info-section" className="space-y-4">
-                <h3 className="text-sm font-semibold text-black-450 flex items-center gap-2">
-                  <HardDrive className="w-4 h-4 text-blue-500" />
-                  Storage Information
-                </h3>
-                <div className="bg-slate-50/80 backdrop-blur-sm rounded-lg p-4 space-y-3 shadow-sm">
-                  {serverInfo.storage.volumes.map((vol: any, idx: number) => (
-                    <div key={idx}>
-                      <p className="text-sm text-slate-600">{vol.device}</p>
-                      <p className="text-sm font-medium text-slate-800">
-                        {((vol.size.used / vol.size.total) * 100).toFixed(1)}% used
-                        ({(vol.size.free / (1024 * 1024 * 1024)).toFixed(2)} GB free)
-                      </p>
+            {/* Storage Details */}
+            <div id="storage-volumes-section" className="bg-slate-50/80 backdrop-blur-sm p-4 rounded-lg shadow-sm">
+              <h3 className="text-sm font-semibold text-slate-800 mb-4">Storage Details</h3>
+              <div className="space-y-4">
+                {storage.volumes.map((volume, index) => (
+                  <div key={index} className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium text-slate-800">{volume.mountPoint}</span>
+                      <span className={`text-xs px-2 py-1 rounded-full backdrop-blur-sm ${
+                        volume.smart.status === 'OK' ? 'bg-green-100/80 text-green-800' : 'bg-red-100/80 text-red-800'
+                      }`}>
+                        {volume.smart.status}
+                      </span>
                     </div>
-                  ))}
+                    <div className="text-sm text-slate-600">
+                      {(volume.size.used / 1024).toFixed(2)} GB used of {(volume.size.total / 1024).toFixed(2)} GB
+                    </div>
+                    <div className="w-full bg-gray-200/50 rounded-full h-2">
+                      <div 
+                        className={`h-2 rounded-full transition-all duration-300 ${
+                          volume.size.percentage > 90 ? 'bg-red-500' :
+                          volume.size.percentage > 70 ? 'bg-yellow-500' :
+                          'bg-blue-500'
+                        }`}
+                        style={{ width: `${volume.size.percentage}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          {/* Resource Usage */}
+          <div id="monitoring-section" className="bg-slate-50/80 backdrop-blur-sm p-4 rounded-lg shadow-sm md col-span-2">
+              <h3 className="text-sm font-semibold text-slate-800 mb-4">Resource Usage</h3>
+              <div className="space-y-3">
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-sm text-slate-600">CPU Usage</span>
+                    <span className="text-sm font-medium text-slate-800">{cpu.usage.overall.toFixed(1)}%</span>
+                  </div>
+                  <div className="w-full bg-gray-200/50 rounded-full h-2">
+                    <div 
+                      className="bg-blue-500 h-2 rounded-full transition-all duration-300" 
+                      style={{ width: `${cpu.usage.overall}%` }}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-sm text-slate-600">Memory Usage</span>
+                    <span className="text-sm font-medium text-slate-800">
+                      {((memory.physical.used / memory.physical.total) * 100).toFixed(1)}%
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-200/50 rounded-full h-2">
+                    <div 
+                      className="bg-teal-500 h-2 rounded-full transition-all duration-300" 
+                      style={{ width: `${(memory.physical.used / memory.physical.total) * 100}%` }}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-sm text-slate-600">Storage Usage</span>
+                    <span className="text-sm font-medium text-slate-800">
+                      {storage.volumes[0]?.size.percentage || 0}%
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-200/50 rounded-full h-2">
+                    <div 
+                      className="bg-orange-500 h-2 rounded-full transition-all duration-300" 
+                      style={{ width: `${storage.volumes[0]?.size.percentage || 0}%` }}
+                    />
+                  </div>
                 </div>
               </div>
+           </div>
 
               {/* Network Information */}
               <div id="network-info-section" className="space-y-4 md:col-span-2">

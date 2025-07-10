@@ -27,7 +27,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
     {
       title: 'Infrastructure',
       items: [
-        { id: '/ec2-instances', icon: Server, label: 'EC2 Instances' },
+        { id: '/security-diagnostics', icon: Server, label: 'Security & Diagnostics' },
         { id: '/cloudwatch', icon: BarChart3, label: 'CloudWatch Metrics' },
         { id: '/load-balancers', icon: Scale, label: 'Load Balancers' },
       ]

@@ -10,7 +10,7 @@ const NavigationTabs = () => {
   const tabs = [
     { id: 'overview', label: 'Overview', path: '/' },
     { id: 'monitoring', label: 'Monitoring', path: '/system-health' },
-    { id: 'infrastructure', label: 'Infrastructure', path: '/ec2-instances' },
+    { id: 'infrastructure', label: 'Security & Diagnostics', path: '/security-diagnostics' },
     { id: 'automation', label: 'Automation', path: '/automation-tasks' }
   ];
 

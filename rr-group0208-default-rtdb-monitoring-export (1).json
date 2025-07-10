@@ -1,0 +1,247 @@
+ "monitoring":{
+  "server-info": {
+    "2025-07-10T09-07-44-943852+00-00": {
+      "backups": {
+        "error": "empty separator"
+      },
+      "cpu": {
+        "hardware": {
+          "baseSpeed": 0,
+          "cores": 4,
+          "maxSpeed": 2803,
+          "modelName": "Intel64 Family 6 Model 140 Stepping 1, GenuineIntel",
+          "processors": 1,
+          "threads": 8
+        },
+        "perCore": [
+          {
+            "frequency": 2803,
+            "id": 0,
+            "usage": 0
+          },
+          {
+            "frequency": 2803,
+            "id": 1,
+            "usage": 0
+          },
+          {
+            "frequency": 2803,
+            "id": 2,
+            "usage": 0
+          },
+          {
+            "frequency": 2803,
+            "id": 3,
+            "usage": 0
+          },
+          {
+            "frequency": 2803,
+            "id": 4,
+            "usage": 0
+          },
+          {
+            "frequency": 2803,
+            "id": 5,
+            "usage": 0
+          },
+          {
+            "frequency": 2803,
+            "id": 6,
+            "usage": 0
+          },
+          {
+            "frequency": 2803,
+            "id": 7,
+            "usage": 0
+          }
+        ],
+        "usage": {
+          "idle": 0,
+          "iowait": 0,
+          "loadAverages": {
+            "15min": 0,
+            "1min": 0,
+            "5min": 0
+          },
+          "overall": 15.2,
+          "system": 0,
+          "user": 0
+        }
+      },
+      "firewall": {
+        "domain": "ON",
+        "private": "OFF",
+        "public": "OFF"
+      },
+      "memory": {
+        "physical": {
+          "available": 4142,
+          "buffers": 0,
+          "cached": 0,
+          "free": 4142,
+          "sharedMemory": 0,
+          "swapCached": 0,
+          "total": 16112,
+          "used": 11969
+        },
+        "swap": {
+          "free": 4021,
+          "swappiness": 0,
+          "total": 4096,
+          "used": 74
+        },
+        "virtualMemory": {
+          "free": 8164,
+          "total": 20208,
+          "used": 12044
+        }
+      },
+      "mysql": {
+        "error": "[WinError 2] The system cannot find the file specified"
+      },
+      "network": {
+        "connections": {
+          "closeWait": 6,
+          "established": 19,
+          "listening": 33,
+          "timeWait": 5,
+          "total": 108
+        },
+        "dns": {
+          "cacheSize": 1000,
+          "responseTime": 25,
+          "servers": [
+            "8.8.8.8",
+            "8.8.4.4"
+          ]
+        }
+      },
+      "processes": {
+        "summary": {
+          "running": 315,
+          "sleeping": 0,
+          "stopped": 0,
+          "total": 318,
+          "zombie": 0
+        },
+        "topProcesses": {
+          "cpu": [
+            {
+              "cpu_percent": 697.2,
+              "create_time": 0,
+              "memory_percent": 0.00004848741097105253,
+              "name": "System Idle Process",
+              "num_threads": 24,
+              "pid": 0,
+              "status": "running",
+              "username": "NT AUTHORITY\\SYSTEM"
+            }
+          ],
+          "memory": [
+            {
+              "cpu_percent": 0.1,
+              "create_time": 1752135705.2976017,
+              "memory_percent": 4.176487387697096,
+              "name": "MemCompression",
+              "num_threads": 54,
+              "pid": 3904,
+              "status": "running"
+            }
+          ]
+        }
+      },
+      "smart": {
+        "disks": [
+          {
+            "DeviceId": "0",
+            "FriendlyName": "SAMSUNG MZVLB1T0HBLR-000H1",
+            "HealthStatus": "Healthy",
+            "MediaType": "SSD",
+            "OperationalStatus": "OK",
+            "Size": 1024209543168
+          }
+        ]
+      },
+      "storage": {
+        "volumes": [
+          {
+            "device": "C:\\",
+            "fileSystem": "NTFS",
+            "mountPoint": "C:\\",
+            "size": {
+              "free": 9529,
+              "percentage": 95.3,
+              "total": 201448,
+              "used": 191919
+            },
+            "smart": {
+              "status": "unknown"
+            }
+          },
+          {
+            "device": "D:\\",
+            "fileSystem": "NTFS",
+            "mountPoint": "D:\\",
+            "size": {
+              "free": 184482,
+              "percentage": 9.1,
+              "total": 202849,
+              "used": 18366
+            },
+            "smart": {
+              "status": "unknown"
+            }
+          },
+          {
+            "device": "E:\\",
+            "fileSystem": "NTFS",
+            "mountPoint": "E:\\",
+            "size": {
+              "free": 42594,
+              "percentage": 89.7,
+              "total": 414999,
+              "used": 372405
+            },
+            "smart": {
+              "status": "unknown"
+            }
+          },
+          {
+            "device": "H:\\",
+            "fileSystem": "NTFS",
+            "mountPoint": "H:\\",
+            "size": {
+              "free": 114282,
+              "percentage": 26.5,
+              "total": 155549,
+              "used": 41267
+            },
+            "smart": {
+              "status": "unknown"
+            }
+          }
+        ]
+      },
+      "systemInfo": {
+        "basics": {
+          "hardware": {
+            "biosVersion": "T76 Ver. 01.21.00",
+            "manufacturer": "HP",
+            "model": "HP ZBook Firefly 15 inch G8 Mobile Workstation PC",
+            "serialNumber": "5CG11965YF"
+          },
+          "hostname": "CORP-HARISH",
+          "os": {
+            "architecture": "AMD64",
+            "kernel": "10",
+            "lastBoot": "2025-07-10T13:51:19.791517",
+            "name": "Microsoft Windows 11 Pro",
+            "uptime": "0:46:14",
+            "version": "10.0.26100"
+          }
+        }
+      },
+      "timestamp": "2025-07-10T09:07:33.851518Z"
+    }
+  }
+}

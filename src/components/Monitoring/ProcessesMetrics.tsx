@@ -116,8 +116,8 @@ const ProcessesMetrics: React.FC<ProcessesMetricsProps> = ({ summary, topCPU, to
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{proc.pid}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{proc.num_threads}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{proc.username}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{proc.cpu_percent.toFixed(1)}%</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{proc.memory_percent.toFixed(1)}%</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{proc.cpu_percent?.toFixed(2)}%</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{proc.memory_percent?.toFixed(2)}%</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(proc.status)}`}>{proc.status}</span>
                     </td>

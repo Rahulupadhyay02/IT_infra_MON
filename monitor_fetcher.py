@@ -11,7 +11,7 @@ firebase_admin.initialize_app(cred, {
 })
 
 # Step 2: EC2 Flask unified monitoring route
-EC2_MONITOR_URL = "http://3.110.108.255:5000/api/server-info"
+EC2_MONITOR_URL = "http://172.16.17.72:5000/api/server-info"
 
 # Step 3: Fetch and push every 360 seconds
 while True:

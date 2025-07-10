@@ -4,6 +4,8 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'fire
 import { auth } from '../../config/firebase';
 import logo from '../../assets/images/logo.png';
 import networkBg from '../../assets/images/network-bg.jpg';
+import Player from 'lottie-react';
+import dataAnalyticsAnimation from '../../assets/lottie/Data analytics techniques.json';
 
 const AuthPage = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -43,21 +45,28 @@ const AuthPage = () => {
       }}
     >
       <div className="absolute inset-0 bg-white/10 backdrop-blur-[2px] z-0" />
-      <div className="relative z-10 w-full flex flex-col items-center">
-        {/* Logo and Heading */}
-        <div className="flex flex-col items-center mb-6">
-          <img src={logo} alt="Logo" className="w-20 h-20 rounded-full shadow-lg mb-3 border-4 border-white" />
-          <h1 className="text-2xl md:text-3xl font-extrabold text-white mb-1" style={{ fontFamily: 'Poppins, Inter, sans-serif' }}>
-            IT Infrastructure Monitoring & Automation
-          </h1>
+      <div className="relative z-10 w-full flex flex-row items-center justify-center min-h-[80vh]">
+        {/* Left: Lottie Animation */}
+        <div className="hidden md:flex w-1/2 justify-start items-center bg-red-300/20 rounded-2xl shadow-2xl">
+          <Player
+            autoplay
+            loop
+            animationData={dataAnalyticsAnimation}
+            style={{ height: '85vh', width: '100%' }}
+          />
         </div>
-
-        {/* Auth Card */}
-        <div className="w-full max-w-md bg-white/95 rounded-2xl shadow-2xl p-8 border border-blue-100 ">
+        {/* Right: Auth Card */}
+      <div className="w-[48%] max-w-3xl min-h-[90vh] bg-white rounded-2xl shadow-2xl p-16 border border-blue-100 flex-shrink-0 ml-auto mr-8 flex flex-col justify-center">
+          <div className="flex flex-col items-center mb-6">
+            <img src={logo} alt="Logo" className="w-70 h-40 rounded-full shadow-lg mb-3 border-4 border-white" />
+            <h1 className="text-2xl md:text-3xl font-extrabold text-white mb-1" style={{ fontFamily: 'Poppins, Inter, sans-serif', color: '#1e293b' }}>
+              IT Infrastructure Monitoring & Automation
+            </h1>
+          </div>
           <h1 className="text-xl font-bold text-blue-900 tracking-wide flex flex-col items-center mb-3" style={{ fontFamily: 'Poppins, Inter, sans-serif' }}>
             Welcome
           </h1>
-          <p className="mt-1 text-center text-base text-gray-500 flex flex-col items-center max-w-md mb-3">
+          <p className="mt-1 text-center text-base text-gray-500 flex flex-col items-center mb-3">
             Securely monitor, manage, and automate your IT infrastructure from a single dashboard.
           </p>
           <form className="space-y-6" onSubmit={handleSubmit}>
@@ -79,7 +88,6 @@ const AuthPage = () => {
                 />
               </div>
             </div>
-
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-slate-700">
                 Password
@@ -98,13 +106,11 @@ const AuthPage = () => {
                 />
               </div>
             </div>
-
             {error && (
               <div className="text-red-600 text-sm font-medium bg-red-50 p-2 rounded">
                 {error}
               </div>
             )}
-
             <div>
               <button
                 type="submit"
@@ -116,7 +122,6 @@ const AuthPage = () => {
               </button>
             </div>
           </form>
-
           <div className="mt-6">
             <button
               onClick={() => setIsSignUp(!isSignUp)}

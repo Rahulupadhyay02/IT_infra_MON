@@ -213,7 +213,7 @@ const OverviewPage: React.FC = () => {
                   <span className="font-medium text-slate-800">{process.name}</span>
                 </div>
                 <div className="text-sm text-gray-700">
-                  CPU: {process.cpu_percent.toFixed(1)}% | MEM: {process.memory_percent.toFixed(1)}%
+                  CPU: {process.cpu_percent?.toFixed(2)}% | MEM: {process.memory_percent?.toFixed(2)}%
                 </div>
               </div>
             ))}

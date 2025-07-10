@@ -8,6 +8,7 @@ import AuthPage from './components/Pages/AuthPage';
 import Footer from './components/Footer/Footer';
 import { useFirebaseData } from './hooks/useFirebaseData';
 import { auth } from './config/firebase';
+import SecurityDiagnosticsPage from './components/Pages/SecurityDiagnosticsPage';
 
 // Lazy load pages
 const OverviewPage = lazy(() => import('./components/Pages/OverviewPage'));
@@ -15,7 +16,6 @@ const SystemHealthPage = lazy(() => import('./components/Pages/SystemHealthPage'
 const TicketsPage = lazy(() => import('./components/Pages/TicketsPage'));
 const PatchManagementPage = lazy(() => import('./components/Pages/PatchManagementPage'));
 const AutomationTasksPage = lazy(() => import('./components/Pages/AutomationTasksPage'));
-const EC2InstancesPage = lazy(() => import('./components/Pages/EC2InstancesPage'));
 const ProfilePage = lazy(() => import('./components/Pages/ProfilePage'));
 const AlertsPage = lazy(() => import('./components/Pages/AlertsPage'));
 const CloudWatchPage = lazy(() => import('./components/Pages/CloudWatchPage'));
@@ -88,6 +88,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 function App() {
   return (
+    <div style={{ zoom: 0.9 }}>
     <Router>
       <Routes>
         <Route path="/auth" element={<AuthPage />} />
@@ -140,10 +141,10 @@ function App() {
             </DashboardLayout>
           </ProtectedRoute>
         } />
-        <Route path="/ec2-instances" element={
+        <Route path="/security-diagnostics" element={
           <ProtectedRoute>
             <DashboardLayout>
-              <EC2InstancesPage />
+              <SecurityDiagnosticsPage />
             </DashboardLayout>
           </ProtectedRoute>
         } />
@@ -205,6 +206,7 @@ function App() {
         } />
       </Routes>
     </Router>
+    </div>
   );
 }
 

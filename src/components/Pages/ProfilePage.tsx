@@ -4,6 +4,8 @@ import { auth } from '../../config/firebase';
 import { User } from 'firebase/auth';
 import PageWrapper from './PageWrapper';
 import { Camera, Upload } from 'lucide-react';
+import Player from 'lottie-react';
+import successAnimation from '../../assets/lottie/Success animation.json';
 
 const ProfilePage = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -47,7 +49,7 @@ const ProfilePage = () => {
   if (!user) {
     return (
       <div className="flex items-center justify-center h-full">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+        <div className="animate-spin rounded-full h-20 w-12 border-b-2 border-blue-500"></div>
       </div>
     );
   }
@@ -59,9 +61,15 @@ const ProfilePage = () => {
       }}>
         <div className="w-[800px] h-[900px] bg-white/30 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200/20 overflow-hidden">
           <div className="px-8 py-8 h-full flex flex-col">
-            <div className="mb-6">
+            <div className="mb-6 flex flex-col items-center">
+              <Player
+                autoplay
+                loop={false}
+                animationData={successAnimation}
+                style={{ height: '120px', width: '120px' }}
+              />
               <h2 className="text-2xl font-semibold text-slate-1500 mb-2">Personal Information</h2>
-              <p className="text-slate-600">Your account details and preferences</p>
+              <p className="text-gray-800">Your account details and preferences</p>
             </div> 
 
             <div className="flex-grow">

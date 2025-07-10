@@ -86,7 +86,7 @@ const ServicesMetrics: React.FC<ServicesMetricsProps> = ({ data, instanceId }) =
                   {service.pid}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {service.cpu_percent.toFixed(1)}%
+                  {service.cpu_percent?.toFixed(2)}%
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {service.memory_percent.toFixed(1)}%
