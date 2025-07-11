@@ -57,8 +57,9 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
 
   return (
     <div
-      className={`h-full overflow-y-auto bg-gradient-to-b from-slate-800 to-slate-900 transition-all duration-300 ${collapsed ? 'w-20' : 'w-64'}`}
+    className={`h-screen overflow-y-auto overflow-x-hidden bg-gradient-to-b from-blue-900 via-slate-900 to-red-900 opacity-95 transition-all duration-300 ${collapsed ? 'w-20' : 'w-64'}`}
     >
+      <div className="relative z-10 h-full">
       {/* Collapse/Expand Button */}
       <div className="flex justify-end items-center px-2 pt-3 pb-1">
         <button
@@ -98,6 +99,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
           </nav>
         </div>
       ))}
+      </div>
     </div>
   );
 };

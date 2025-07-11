@@ -14,9 +14,11 @@ const PageWrapper: React.FC<PageWrapperProps> = ({ children, title }) => {
         className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage: `url(${commonBg})`,
-          filter: 'brightness(0.9) contrast(1.1)',
+          filter: 'brightness(0.6) contrast(1.0)',
         }}
       />
+      {/* Optional: Add a subtle overlay for readability */}
+      <div className="fixed inset-0 z-0 bg-black bg-opacity-10 pointer-events-none" />
       
       {/* Content Container */}
       <div className="relative z-10 p-6">

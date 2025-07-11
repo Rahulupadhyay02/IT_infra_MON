@@ -1,5 +1,4 @@
 import React from 'react';
-import { PenTool as Tool, RefreshCw } from 'lucide-react';
 import StatusIndicator from '../Dashboard/StatusIndicator';
 import CPUMetrics from '../Monitoring/CPUMetrics';
 import MemoryMetrics from '../Monitoring/MemoryMetrics';
@@ -77,7 +76,6 @@ const SystemHealthPage: React.FC = () => {
     <PageWrapper title="System Health Monitoring">
       <div className="flex justify-end mb-6">
         <div className="flex items-center gap-2 text-sm text-white/80 bg-slate-800 px-3 py-2 rounded-lg backdrop-blur-sm">
-          <RefreshCw className="w-4 h-4" />
           <span>Last updated: {formattedLastUpdate}</span>
         </div>
       </div>
@@ -88,7 +86,6 @@ const SystemHealthPage: React.FC = () => {
           <div className="flex justify-between items-center mb-5 pb-4 border-b border-gray-200/30">
             <h3 className="text-lg font-semibold text-black-600">Component Status</h3>
             <button className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors shadow-sm">
-              <Tool className="w-4 h-4" />
               Run Health Check
             </button>
           </div>
@@ -123,8 +120,8 @@ const SystemHealthPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Metrics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+      {/* Metrics Layout - Changed from grid to a vertical stack */}
+      <div className="flex flex-col gap-6 mt-6">
         <div id="cpu-metrics-section" className="bg-white/90 backdrop-blur-sm border border-gray-200/20 rounded-lg shadow-lg overflow-hidden">
           <CPUMetrics data={latestData.cpu} instanceId={latestTimestamp} />
         </div>

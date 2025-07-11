@@ -5,7 +5,7 @@ import { auth } from '../../config/firebase';
 import logo from '../../assets/images/logo.png';
 import networkBg from '../../assets/images/network-bg.jpg';
 import Player from 'lottie-react';
-import dataAnalyticsAnimation from '../../assets/lottie/Data analytics techniques.json';
+import dataAnalyticsAnimation from '../../assets/lottie/loginAnimation.json';
 
 const AuthPage = () => {
   const [isSignUp, setIsSignUp] = useState(false);

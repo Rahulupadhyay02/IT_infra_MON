@@ -5,7 +5,7 @@ import { User } from 'firebase/auth';
 import PageWrapper from './PageWrapper';
 import { Camera, Upload } from 'lucide-react';
 import Player from 'lottie-react';
-import successAnimation from '../../assets/lottie/Success animation.json';
+import successAnimation from '../../assets/lottie/profile.json';
 
 const ProfilePage = () => {
   const [user, setUser] = useState<User | null>(null);

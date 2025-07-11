@@ -9,6 +9,8 @@ import Footer from './components/Footer/Footer';
 import { useFirebaseData } from './hooks/useFirebaseData';
 import { auth } from './config/firebase';
 import SecurityDiagnosticsPage from './components/Pages/SecurityDiagnosticsPage';
+import IntroVideo from './components/IntroVideo';
+import LoginPage from './components/Pages/LoginPage';
 
 // Lazy load pages
 const OverviewPage = lazy(() => import('./components/Pages/OverviewPage'));
@@ -88,10 +90,18 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 function App() {
   return (
-    <div style={{ zoom: 0.9 }}>
+
     <Router>
       <Routes>
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/auth" element={<AuthPage />} />
+        <Route path="/dashboard" element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <OverviewPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        } />
         <Route path="/profile" element={
           <ProtectedRoute>
             <DashboardLayout>
@@ -99,13 +109,7 @@ function App() {
             </DashboardLayout>
           </ProtectedRoute>
         } />
-        <Route path="/" element={
-          <ProtectedRoute>
-            <DashboardLayout>
-              <OverviewPage />
-            </DashboardLayout>
-          </ProtectedRoute>
-        } />
+        <Route path="/" element={<IntroVideo />} />
         <Route path="/system-health" element={
           <ProtectedRoute>
             <DashboardLayout>
@@ -206,7 +210,7 @@ function App() {
         } />
       </Routes>
     </Router>
-    </div>
+
   );
 }
 
