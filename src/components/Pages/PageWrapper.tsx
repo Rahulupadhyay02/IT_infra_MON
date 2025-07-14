@@ -8,18 +8,15 @@ interface PageWrapperProps {
 
 const PageWrapper: React.FC<PageWrapperProps> = ({ children, title }) => {
   return (
-    <div className="relative min-h-full">
-      {/* Background Image */}
-      <div 
-        className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: `url(${commonBg})`,
-          filter: 'brightness(0.6) contrast(1.0)',
-        }}
-      />
+    <div
+      className="relative min-h-full bg-cover bg-center bg-no-repeat"
+      style={{
+        backgroundImage: `url(${commonBg})`,
+        filter: 'brightness(0.6) contrast(1.0)',
+      }}
+    >
       {/* Optional: Add a subtle overlay for readability */}
-      <div className="fixed inset-0 z-0 bg-black bg-opacity-10 pointer-events-none" />
-      
+      <div className="absolute inset-0 z-0 bg-black bg-opacity-10 pointer-events-none" />
       {/* Content Container */}
       <div className="relative z-10 p-6">
         {/* Page Title */}
@@ -28,7 +25,6 @@ const PageWrapper: React.FC<PageWrapperProps> = ({ children, title }) => {
             {title}
           </h1>
         </div>
-
         {/* Page Content */}
         <div className="space-y-6 relative">
           {children}

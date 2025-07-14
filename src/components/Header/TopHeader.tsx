@@ -30,11 +30,19 @@ const TopHeader = () => {
           <Globe className="w-4 h-4" />
           <span>Server Status: All Systems Operational</span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 relative">
           <Clock className="w-4 h-4" />
-          <span>Last Updated: Just now</span>
+          {/* Live Text with Red Dot */}
+          <span className="flex items-center gap-1">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+            </span>
+            Live
+          </span>
         </div>
       </div>
+
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2">
           <Bell className="w-4 h-4" />
@@ -54,7 +62,7 @@ const TopHeader = () => {
             </button>
 
             {showDropdown && (
-              <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-[200]" style={{background: 'white'}}>
+              <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-[200]">
                 <div className="py-1" role="menu" aria-orientation="vertical">
                   <Link
                     to="/profile"

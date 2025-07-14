@@ -8,8 +8,9 @@ const Footer = () => {
       <div 
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: 'url("/src/assets/images/footer.jpg")',
-          filter: 'brightness(0.75)'
+          //backgroundImage: 'url("/src/assets/images/footer.jpg")',
+          backgroundColor: '#f0f4f8',
+          filter: 'brightness(0.8)'
         }}
       />
 
@@ -101,7 +102,7 @@ const Footer = () => {
         <div className="mt-12 pt-8 border-t border-gray-700">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-black-400 text-sm">
-              © 2024 RR Group. All rights reserved.
+              © 2025 RR Group. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <a href="#" className="text-black-400 hover:text-blue-400 text-sm transition-colors">
