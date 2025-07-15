@@ -10,11 +10,12 @@ import { auth } from './config/firebase';
 import SecurityDiagnosticsPage from './components/Pages/SecurityDiagnosticsPage';
 import IntroVideo from './components/IntroVideo';
 import LoginPage from './components/Pages/LoginPage';
+import TicketPage from './components/Pages/TicketPage';
+import IT_TicketPage from './components/Pages/IT_TicketPage';
 
 // Lazy load pages
 const OverviewPage = lazy(() => import('./components/Pages/OverviewPage'));
 const SystemHealthPage = lazy(() => import('./components/Pages/SystemHealthPage'));
-const TicketsPage = lazy(() => import('./components/Pages/TicketsPage'));
 const PatchManagementPage = lazy(() => import('./components/Pages/PatchManagementPage'));
 const AutomationTasksPage = lazy(() => import('./components/Pages/AutomationTasksPage'));
 const ProfilePage = lazy(() => import('./components/Pages/ProfilePage'));
@@ -153,7 +154,7 @@ function App() {
         <Route path="/tickets" element={
           <ProtectedRoute>
             <DashboardLayout>
-              <TicketsPage />
+              <TicketPage />
             </DashboardLayout>
           </ProtectedRoute>
         } />
@@ -203,6 +204,13 @@ function App() {
           <ProtectedRoute>
             <DashboardLayout>
               <ReportPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        } />
+        <Route path="/it-tickets" element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <IT_TicketPage />
             </DashboardLayout>
           </ProtectedRoute>
         } />

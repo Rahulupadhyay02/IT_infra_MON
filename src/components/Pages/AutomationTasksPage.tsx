@@ -4,7 +4,11 @@ import PageWrapper from './PageWrapper';
 import { Plus, Edit, Trash2, RefreshCw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-const AutomationTasksPage: React.FC = () => {
+interface AutomationTasksPageProps {
+  sidebarCollapsed?: boolean;
+}
+
+const AutomationTasksPage: React.FC<AutomationTasksPageProps> = ({ sidebarCollapsed }) => {
   const { tasks, loading, error, deleteTask } = useAutomationTasks();
   const navigate = useNavigate();
 
@@ -31,7 +35,7 @@ const AutomationTasksPage: React.FC = () => {
   };
 
   return (
-    <PageWrapper title="Automation Tasks">
+    <PageWrapper title="Automation Tasks" sidebarCollapsed={sidebarCollapsed}>
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-semibold"> Task List </h2>
         <button

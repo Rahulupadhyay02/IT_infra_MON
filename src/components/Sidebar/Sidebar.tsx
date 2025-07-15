@@ -5,6 +5,7 @@ import {
   Scale, Ticket, Package, Shield, Zap, Clock, 
   ChevronLeft, ChevronRight, FileText 
 } from 'lucide-react';
+import { useAuth } from '../../hooks/useAuth';
 
 interface SidebarProps {
   collapsed: boolean;
@@ -15,6 +16,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const currentPath = location.pathname;
+  const { user } = useAuth();
 
   const menuSections = [
     {
@@ -85,10 +87,18 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
               {section.items.map((item) => {
                 const Icon = item.icon;
                 const isActive = currentPath === item.id;
+                // Special logic for Tickets button
+                const isTickets = item.id === '/tickets';
                 return (
                   <button
                     key={item.id}
-                    onClick={() => navigate(item.id)}
+                    onClick={() => {
+                      if (isTickets && user && user.email === 'ithelpdesk@rr.com.in') {
+                        navigate('/it-tickets');
+                      } else {
+                        navigate(item.id);
+                      }
+                    }}
                     className={`w-full flex items-center transition-all duration-200 border-l-2 px-2 py-2.5 text-sm font-medium rounded-md ${
                       isActive
                         ? 'bg-blue-100 text-blue-800 border-blue-500'

@@ -15,7 +15,10 @@ import {
 } from 'lucide-react';
 import PageWrapper from './PageWrapper';
 
-const ScheduledJobsPage: React.FC = () => {
+interface ScheduledJobsPageProps {
+  sidebarCollapsed?: boolean;
+}
+const ScheduledJobsPage: React.FC<ScheduledJobsPageProps> = ({ sidebarCollapsed }) => {
   const { tasks: jobs, loading, error } = useAutomationTasks();
   const [selectedFilter, setSelectedFilter] = useState<'all' | 'active' | 'completed' | 'failed'>('all');
   const [solvingJobId, setSolvingJobId] = useState<string | null>(null);
@@ -113,7 +116,7 @@ const ScheduledJobsPage: React.FC = () => {
   };
 
   return (
-    <PageWrapper title="Scheduled Jobs">
+    <PageWrapper title="Scheduled Jobs" sidebarCollapsed={sidebarCollapsed}>
       <div className="flex justify-end gap-4 mb-6">
         <button className="px-4 py-2 bg-white/90 backdrop-blur-sm border border-gray-200/20 rounded-lg text-gray-700 hover:bg-white/95 transition-all shadow-sm flex items-center gap-2">
           <RotateCw className="w-4 h-4" />
