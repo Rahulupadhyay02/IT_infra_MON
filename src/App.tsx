@@ -5,7 +5,6 @@ import MainHeader from './components/Header/MainHeader';
 import NavigationTabs from './components/Navigation/NavigationTabs';
 import Sidebar from './components/Sidebar/Sidebar';
 import AuthPage from './components/Pages/AuthPage';
-import Footer from './components/Footer/Footer';
 import { useFirebaseData } from './hooks/useFirebaseData';
 import { auth } from './config/firebase';
 import SecurityDiagnosticsPage from './components/Pages/SecurityDiagnosticsPage';
@@ -53,17 +52,16 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         <MainHeader />
         <NavigationTabs />
       </div>
-      <div className="flex flex-1 pt-[160px]">
-        <aside className="fixed left-0 top-[160px] bottom-0 z-40">
+      <div className="flex flex-1 pt-[160px] min-h-0">
+        <aside className="fixed left-0 top-[160px] bottom-0 z-40 h-[calc(100vh-160px)] w-64">
           <Sidebar collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} />
         </aside>
-        <div className={`flex-1 flex flex-col transition-all duration-300 ${sidebarCollapsed ? 'ml-20' : 'ml-64'}`}>
+        <div className={`flex-1 flex flex-col transition-all duration-300 ${sidebarCollapsed ? 'ml-20' : 'ml-64'} min-h-0`}>
           <main className="flex-1 p-6 overflow-auto relative">
             <Suspense fallback={<LoadingSpinner />}>
-              {children}
+              {React.isValidElement(children) ? React.cloneElement(children, { sidebarCollapsed }) : children}
             </Suspense>
           </main>
-          <Footer />
         </div>
       </div>
     </div>

@@ -35,28 +35,25 @@ const AuthPage = () => {
   };
 
   return (
-    <div
-      className="min-h-screen flex flex-col justify-center items-center px-4 py-8 relative"
-      style={{
-        backgroundImage: `url(${networkBg})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-      }}
-    >
-      <div className="absolute inset-0 bg-white/10 backdrop-blur-[2px] z-0" />
-      <div className="relative z-10 w-full flex flex-row items-center justify-center min-h-[80vh]">
+    <div className="min-h-screen w-full flex flex-col justify-center items-center px-0 py-0 relative overflow-hidden">
+      {/* 16:9 Background Layer */}
+      <div className="fixed inset-0 z-0 flex items-center justify-center w-full h-full pointer-events-none">
+        <div className="w-full h-full aspect-[16/9] max-w-none max-h-none bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(${networkBg})` }} />
+        <div className="absolute inset-0 bg-white/10 backdrop-blur-[2px]" />
+      </div>
+      {/* Content Layer */}
+      <div className="relative z-10 w-full flex flex-col md:flex-row items-center justify-center min-h-[80vh] px-4 py-8">
         {/* Left: Lottie Animation */}
-        <div className="hidden md:flex w-1/2 justify-start items-center bg-red-300/20 rounded-2xl shadow-2xl">
+        <div className="hidden md:flex md:w-1/2 justify-start items-center">
           <Player
             autoplay
             loop
             animationData={dataAnalyticsAnimation}
-            style={{ height: '85vh', width: '100%' }}
+            className="w-full h-auto max-h-[400px] md:max-h-[500px] lg:max-h-[600px]"
           />
         </div>
         {/* Right: Auth Card */}
-      <div className="w-[48%] max-w-3xl min-h-[90vh] bg-white rounded-2xl shadow-2xl p-16 border border-blue-100 flex-shrink-0 ml-auto mr-8 flex flex-col justify-center">
+        <div className="w-full md:w-[48%] max-w-3xl min-h-[90vh] bg-white rounded-2xl shadow-2xl p-8 md:p-16 border border-blue-100 flex-shrink-0 ml-0 md:ml-auto md:mr-8 flex flex-col justify-center">
           <div className="flex flex-col items-center mb-6">
             <img src={logo} alt="Logo" className="w-70 h-40 rounded-full shadow-lg mb-3 border-4 border-white" />
             <h1 className="text-2xl md:text-3xl font-extrabold text-white mb-1" style={{ fontFamily: 'Poppins, Inter, sans-serif', color: '#1e293b' }}>

@@ -6,7 +6,11 @@ import {
 import { Activity, Clock, Filter } from 'lucide-react';
 import PageWrapper from './PageWrapper';
 
-const CloudWatchPage: React.FC = () => {
+interface CloudWatchPageProps {
+  sidebarCollapsed?: boolean;
+}
+
+const CloudWatchPage: React.FC<CloudWatchPageProps> = ({ sidebarCollapsed }) => {
   const { data, loading, error } = useFirebaseData();
 
   if (loading) {
@@ -61,7 +65,7 @@ const CloudWatchPage: React.FC = () => {
   );
 
   return (
-    <PageWrapper title="CloudWatch Metrics">
+    <PageWrapper title="CloudWatch Metrics" sidebarCollapsed={sidebarCollapsed}>
       <div className="flex justify-end gap-4 mb-6">
         <button className="px-4 py-2 bg-white/90 backdrop-blur-sm border border-gray-200/20 rounded-lg text-gray-700 hover:bg-white/95 transition-all shadow-sm flex items-center gap-2">
           <Clock className="w-4 h-4" />

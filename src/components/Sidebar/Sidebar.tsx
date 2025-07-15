@@ -60,7 +60,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
     <div className={`relative h-screen overflow-y-auto overflow-x-hidden bg-gray-100 border-r border-gray-200 transition-all duration-300 ${collapsed ? 'w-20' : 'w-64'}`}>
       
       {/* Gradient Overlay Layer */}
-      <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-blue-200 via-white to-red-200 opacity-90 pointer-events-none z-0" />
+      <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-blue-50 via-white to-red-50 opacity-90 pointer-events-none z-0" />
 
       <div className="relative z-10 h-full">
         {/* Collapse/Expand Button */}

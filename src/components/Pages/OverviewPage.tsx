@@ -13,7 +13,11 @@ interface HistoricalDataPoint {
   disk: number;
 }
 
-const OverviewPage: React.FC = () => {
+interface OverviewPageProps {
+  sidebarCollapsed?: boolean;
+}
+
+const OverviewPage: React.FC<OverviewPageProps> = ({ sidebarCollapsed }) => {
   const { data, loading, error, lastUpdate } = useFirebaseData();
   const [historicalData, setHistoricalData] = useState<HistoricalDataPoint[]>([]);
 
@@ -113,7 +117,7 @@ const OverviewPage: React.FC = () => {
   const healthScore = getHealthScore();
 
   return (
-    <PageWrapper title="Infrastructure Overview">
+    <PageWrapper title="Infrastructure Overview" sidebarCollapsed={sidebarCollapsed}>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5 mb-6">
         <MetricCard 
           value={metrics.processes} 

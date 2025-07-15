@@ -85,7 +85,11 @@ const extractAlertsNotifications = (latestData: any) => {
   return { alerts, notifications };
 };
 
-const AlertsPage: React.FC = () => {
+interface AlertsPageProps {
+  sidebarCollapsed?: boolean;
+}
+
+const AlertsPage: React.FC<AlertsPageProps> = ({ sidebarCollapsed }) => {
   const { data, loading, error } = useFirebaseData();
 
   let alerts: Alert[] = [];
@@ -134,7 +138,7 @@ const AlertsPage: React.FC = () => {
   }
 
   return (
-    <PageWrapper title="Alerts & Notifications">
+    <PageWrapper title="Alerts & Notifications" sidebarCollapsed={sidebarCollapsed}>
       <div className="flex justify-end gap-4 mb-6">
         <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all shadow-sm">
           Mark All as Read

@@ -4,7 +4,11 @@ import MetricCard from '../Dashboard/MetricCard';
 import StatusIndicator from '../Dashboard/StatusIndicator';
 import PageWrapper from './PageWrapper';
 
-const TicketsPage = () => {
+interface TicketsPageProps {
+  sidebarCollapsed?: boolean;
+}
+
+const TicketsPage: React.FC<TicketsPageProps> = ({ sidebarCollapsed }) => {
   const tickets = [
     {
       id: '#TKT-001',
@@ -33,7 +37,7 @@ const TicketsPage = () => {
   ];
 
   return (
-    <PageWrapper title="IT Service Tickets">
+    <PageWrapper title="IT Service Tickets" sidebarCollapsed={sidebarCollapsed}>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
         <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200/20 p-4">
           <div className="flex flex-col">

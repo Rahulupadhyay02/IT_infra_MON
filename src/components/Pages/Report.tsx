@@ -68,7 +68,11 @@ async function addSectionToPDF(doc: JsPDFType, sectionId: string, title: string)
 }
 
 // --- REACT COMPONENT ---
-const Report: React.FC = () => {
+interface ReportPageProps {
+  sidebarCollapsed?: boolean;
+}
+
+const Report: React.FC<ReportPageProps> = ({ sidebarCollapsed }) => {
     const { data } = useFirebaseData();
     const [downloading, setDownloading] = useState<string | null>(null);
     const [exportingSystemId, setExportingSystemId] = useState<string | null>(null);
@@ -144,7 +148,7 @@ const Report: React.FC = () => {
     }, [data]);
 
     return (
-        <PageWrapper title="System Reports">
+        <PageWrapper title="System Reports" sidebarCollapsed={sidebarCollapsed}>
             <style>{`
                 .pdf-export-container {
                     position: fixed;

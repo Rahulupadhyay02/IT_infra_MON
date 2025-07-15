@@ -3,7 +3,11 @@ import { useFirebaseData } from '../../hooks/useFirebaseData';
 import { Package, RefreshCw, CheckCircle, XCircle, AlertCircle, Clock, Download } from 'lucide-react';
 import PageWrapper from './PageWrapper';
 
-const PatchManagementPage: React.FC = () => {
+interface PatchManagementPageProps {
+  sidebarCollapsed?: boolean;
+}
+
+const PatchManagementPage: React.FC<PatchManagementPageProps> = ({ sidebarCollapsed }) => {
   const { data, loading, error } = useFirebaseData();
   const [selectedFilter, setSelectedFilter] = useState<'all' | 'pending' | 'critical'>('all');
 
@@ -92,7 +96,7 @@ const PatchManagementPage: React.FC = () => {
   };
 
   return (
-    <PageWrapper title="Patch Management">
+    <PageWrapper title="Patch Management" sidebarCollapsed={sidebarCollapsed}>
       <div className="flex justify-end gap-4 mb-6">
         <button className="px-4 py-2 bg-white/90 backdrop-blur-sm border border-gray-200/20 rounded-lg text-gray-700 hover:bg-white/95 transition-all shadow-sm flex items-center gap-2">
           <RefreshCw className="w-4 h-4" />

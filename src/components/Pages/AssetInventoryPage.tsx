@@ -74,7 +74,11 @@ function exportToPDF(data: any[], filename: string) {
   doc.save(filename);
 }
 
-const AssetInventoryPage: React.FC = () => {
+interface AssetInventoryPageProps {
+  sidebarCollapsed?: boolean;
+}
+
+const AssetInventoryPage: React.FC<AssetInventoryPageProps> = ({ sidebarCollapsed }) => {
   const { data, loading, error } = useFirebaseData();
   const [selectedAssetId, setSelectedAssetId] = useState<string | null>(null);
   const [editAssetId, setEditAssetId] = useState<string | null>(null);
@@ -589,7 +593,7 @@ const AssetInventoryPage: React.FC = () => {
 
   // List view (Grid/Table)
   return (
-    <PageWrapper title="Asset Inventory">
+    <PageWrapper title="Asset Inventory" sidebarCollapsed={sidebarCollapsed}>
       <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200/20 p-4">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-black-400">Assets ({assets.length})</h2>

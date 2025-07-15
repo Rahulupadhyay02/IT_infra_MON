@@ -3,7 +3,11 @@ import { useFirebaseData } from '../../hooks/useFirebaseData';
 import { Scale, Server, Activity, RefreshCw, Settings } from 'lucide-react';
 import PageWrapper from './PageWrapper';
 
-const LoadBalancersPage: React.FC = () => {
+interface LoadBalancersPageProps {
+  sidebarCollapsed?: boolean;
+}
+
+const LoadBalancersPage: React.FC<LoadBalancersPageProps> = ({ sidebarCollapsed }) => {
   const { data, loading, error } = useFirebaseData();
 
   if (loading) {
@@ -66,7 +70,7 @@ const LoadBalancersPage: React.FC = () => {
   };
 
   return (
-    <PageWrapper title="Load Balancer">
+    <PageWrapper title="Load Balancer" sidebarCollapsed={sidebarCollapsed}>
       <div className="flex justify-end gap-4 mb-6">
         <button className="px-4 py-2 bg-white/90 backdrop-blur-sm border border-gray-200/20 rounded-lg text-gray-700 hover:bg-white/95 transition-all shadow-sm flex items-center gap-2">
           <RefreshCw className="w-4 h-4" />

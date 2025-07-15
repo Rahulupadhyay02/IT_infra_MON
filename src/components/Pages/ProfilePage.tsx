@@ -7,7 +7,11 @@ import { Camera, Upload } from 'lucide-react';
 import Player from 'lottie-react';
 import successAnimation from '../../assets/lottie/profile.json';
 
-const ProfilePage = () => {
+interface ProfilePageProps {
+  sidebarCollapsed?: boolean;
+}
+
+const ProfilePage: React.FC<ProfilePageProps> = ({ sidebarCollapsed }) => {
   const [user, setUser] = useState<User | null>(null);
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -55,7 +59,7 @@ const ProfilePage = () => {
   }
 
   return (
-    <PageWrapper title="Admin Profile">
+    <PageWrapper title="Admin Profile" sidebarCollapsed={sidebarCollapsed}>
       <div className="flex justify-center items-center min-h-[calc(100vh-12rem)]" style={{
 
       }}>

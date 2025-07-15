@@ -9,7 +9,11 @@ import ProcessesMetrics from '../Monitoring/ProcessesMetrics';
 import PageWrapper from './PageWrapper';
 import { useFirebaseData } from '../../hooks/useFirebaseData';
 
-const SystemHealthPage: React.FC = () => {
+interface SystemHealthPageProps {
+  sidebarCollapsed?: boolean;
+}
+
+const SystemHealthPage: React.FC<SystemHealthPageProps> = ({ sidebarCollapsed }) => {
   const { data, loading, error, lastUpdate } = useFirebaseData();
 
   if (loading) {
@@ -73,7 +77,7 @@ const SystemHealthPage: React.FC = () => {
   }).format(lastUpdate) : 'N/A';
 
   return (
-    <PageWrapper title="System Health Monitoring">
+    <PageWrapper title="System Health Monitoring" sidebarCollapsed={sidebarCollapsed}>
       <div className="flex justify-end mb-6">
         <div className="flex items-center gap-2 text-sm text-white/80 bg-slate-800 px-3 py-2 rounded-lg backdrop-blur-sm">
           <span>Last updated: {formattedLastUpdate}</span>

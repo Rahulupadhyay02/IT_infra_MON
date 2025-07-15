@@ -2,7 +2,11 @@ import React from 'react';
 import PageWrapper from './PageWrapper';
 import { useFirebaseData } from '../../hooks/useFirebaseData';
 
-const SecurityDiagnosticsPage = () => {
+interface SecurityDiagnosticsPageProps {
+  sidebarCollapsed?: boolean;
+}
+
+const SecurityDiagnosticsPage: React.FC<SecurityDiagnosticsPageProps> = ({ sidebarCollapsed }) => {
   const { data, loading, error } = useFirebaseData();
 
   let serverInfo: any = null;
@@ -15,7 +19,7 @@ const SecurityDiagnosticsPage = () => {
 
   if (loading) {
     return (
-      <PageWrapper title="Security & Diagnostics Dashboard">
+      <PageWrapper title="Security & Diagnostics Dashboard" sidebarCollapsed={false}>
         <div className="flex justify-center items-center min-h-[40vh]">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
         </div>
@@ -25,7 +29,7 @@ const SecurityDiagnosticsPage = () => {
 
   if (error || !serverInfo) {
     return (
-      <PageWrapper title="Security & Diagnostics Dashboard">
+      <PageWrapper title="Security & Diagnostics Dashboard" sidebarCollapsed={false}>
         <div className="text-red-600 font-semibold text-center py-12">{error ? String(error) : 'No monitoring data available.'}</div>
       </PageWrapper>
     );
@@ -40,7 +44,7 @@ const SecurityDiagnosticsPage = () => {
   const topProcesses = (serverInfo.processes && serverInfo.processes.topProcesses && serverInfo.processes.topProcesses.cpu) || [];
 
   return (
-    <PageWrapper title="Security & Diagnostics Dashboard">
+    <PageWrapper title="Security & Diagnostics Dashboard" sidebarCollapsed={sidebarCollapsed}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
         {/* Firewall Status */}
         <div className="bg-white rounded-xl shadow p-6">

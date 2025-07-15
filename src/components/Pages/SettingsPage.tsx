@@ -3,7 +3,11 @@ import { useFirebaseData } from '../../hooks/useFirebaseData';
 import { RefreshCw, AlertCircle, Download, Users, Database } from 'lucide-react';
 import PageWrapper from './PageWrapper';
 
-const SettingsPage: React.FC = () => {
+interface SettingsPageProps {
+  sidebarCollapsed?: boolean;
+}
+
+const SettingsPage: React.FC<SettingsPageProps> = ({ sidebarCollapsed }) => {
   const { data, loading, error } = useFirebaseData();
 
   // Get the latest timestamp's data
@@ -18,7 +22,7 @@ const SettingsPage: React.FC = () => {
     : 'N/A';
 
   return (
-    <PageWrapper title="Settings & Maintenance">
+    <PageWrapper title="Settings" sidebarCollapsed={sidebarCollapsed}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
         {/* Backups Module */}
         <div className="bg-white/90 backdrop-blur-sm border border-gray-200/20 rounded-lg shadow-lg p-6 flex flex-col">
