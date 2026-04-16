@@ -5,9 +5,10 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 interface CPUMetricsProps {
   data: MonitoringData['monitoring']['server-info'][string]['cpu'];
   instanceId: string;
+  exportMode?: boolean;
 }
 
-const CPUMetrics: React.FC<CPUMetricsProps> = ({ data, instanceId }) => {
+const CPUMetrics: React.FC<CPUMetricsProps> = ({ data, instanceId, exportMode = false }) => {
   const cpuData = [
     { name: '1 min', value: data.usage.loadAverages['1min'] },
     { name: '5 min', value: data.usage.loadAverages['5min'] },
@@ -17,7 +18,7 @@ const CPUMetrics: React.FC<CPUMetricsProps> = ({ data, instanceId }) => {
   const AI_BAR_COLORS = ['#7F1DFF', '#00E6D8', '#FFB300'];
 
   return (
-    <div className="bg-white rounded-lg shadow p-6 fade-in">
+    <div className={`bg-white rounded-lg shadow p-6 ${exportMode ? '' : 'fade-in'}`}>
       <h3 className="text-lg font-semibold text-slate-800 mb-4">CPU Metrics</h3>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div className="bg-gray-50 p-4 rounded-lg">
@@ -41,7 +42,7 @@ const CPUMetrics: React.FC<CPUMetricsProps> = ({ data, instanceId }) => {
             <YAxis domain={[0, 100]} stroke="#64748B" />
             <Tooltip contentStyle={{ background: 'rgba(30,41,59,0.95)', color: '#fff', borderRadius: '0.75rem', border: '1px solid #7F1DFF', boxShadow: '0 4px 24px #7F1DFF22' }} labelStyle={{ color: '#7F1DFF' }} />
             <Legend iconType="circle" wrapperStyle={{ color: '#64748B', fontWeight: 600 }} />
-            <Line type="monotone" dataKey="value" stroke="#7F1DFF" strokeWidth={3} dot={{ r: 6, fill: '#7F1DFF', stroke: '#fff', strokeWidth: 2 }} name="CPU Usage (%)" isAnimationActive={true} label={{ position: 'top', fill: '#7F1DFF', fontWeight: 700, fontSize: 12, formatter: (v: number) => `${v}%` }} />
+            <Line type="monotone" dataKey="value" stroke="#7F1DFF" strokeWidth={3} dot={{ r: 6, fill: '#7F1DFF', stroke: '#fff', strokeWidth: 2 }} name="CPU Usage (%)" isAnimationActive={!exportMode} label={{ position: 'top', fill: '#7F1DFF', fontWeight: 700, fontSize: 12, formatter: (v: number) => `${v}%` }} />
           </LineChart>
         </ResponsiveContainer>
       </div>

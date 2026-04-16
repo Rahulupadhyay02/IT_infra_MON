@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useFirebaseData } from '../../hooks/useFirebaseData';
-import { Server, HardDrive, Cpu, Network, Shield, CircuitBoard, ArrowLeft, Download, Pencil, Eye, FileText } from 'lucide-react';
+import { Server, HardDrive, Cpu, Network, Shield, CircuitBoard, ArrowLeft, Download, Pencil, Eye, FileText, Plus, X, Trash2 } from 'lucide-react';
 import PageWrapper from './PageWrapper';
 import { ref, update } from 'firebase/database';
 import { database } from '../../config/firebase';
@@ -41,6 +41,128 @@ function getCustomFields(info: Record<string, any>) {
   return Object.entries(info || {})
     .filter(([k]) => !defaultEditFields.some(f => f.key === k))
     .map(([key, value]) => ({ key, value: String(value) }));
+}
+
+const createDefaultAssetForm = () => ({
+  assetId: '',
+  name: '',
+  productName: '',
+  productType: '',
+  os: '',
+  osVersion: '',
+  serviceTag: '',
+  assetState: '',
+  region: '',
+  userName: '',
+  department: '',
+  location: '',
+});
+
+const createFallbackServerInfo = (form: ReturnType<typeof createDefaultAssetForm>) => ({
+  systemInfo: {
+    basics: {
+      hostname: form.name || form.assetId || 'Manual Asset',
+      os: {
+        name: form.os || 'Manual Entry',
+        version: form.osVersion || '',
+        architecture: 'N/A',
+        uptime: 'N/A',
+        kernel: '',
+        lastBoot: '',
+      },
+      hardware: {
+        model: form.productName || form.productType || 'Manual Asset',
+        manufacturer: 'Manual Entry',
+        biosVersion: '',
+        serialNumber: form.serviceTag || form.assetId || 'N/A',
+      },
+    },
+  },
+  cpu: {
+    hardware: {
+      modelName: 'N/A',
+      cores: 0,
+      threads: 0,
+      baseSpeed: 0,
+      maxSpeed: 0,
+    },
+    usage: {
+      overall: 0,
+    },
+  },
+  memory: {
+    physical: {
+      used: 0,
+      total: 1,
+      buffers: 0,
+    },
+  },
+  storage: {
+    volumes: [],
+  },
+  network: {
+    connections: {
+      established: 0,
+      total: 0,
+    },
+    dns: {
+      responseTime: 0,
+    },
+  },
+  firewall: {
+    domain: 'UNKNOWN',
+    private: 'UNKNOWN',
+    public: 'UNKNOWN',
+  },
+});
+
+function buildAssetRecord(assetId: string, info: Record<string, any> = {}, serverInfo?: any, full?: any) {
+  const derivedName = serverInfo?.systemInfo?.basics?.hostname || info?.name || '—';
+  return {
+    assetId,
+    name: derivedName,
+    productName: serverInfo?.systemInfo?.basics?.hardware?.model || info?.productName || info?.name || '—',
+    productType: info?.type || serverInfo?.systemInfo?.basics?.hardware?.model || '—',
+    os: serverInfo?.systemInfo?.basics?.os?.name || info?.os || '—',
+    osVersion: serverInfo?.systemInfo?.basics?.os?.version || info?.osVersion || '',
+    serviceTag: serverInfo?.systemInfo?.basics?.hardware?.serialNumber || info?.serviceTag || '—',
+    assetState: info?.status || full?.status || '—',
+    region: info?.region || full?.region || '—',
+    userName: info?.userName || '—',
+    department: info?.department || '—',
+    location: info?.location || '—',
+    info,
+    serverInfo: serverInfo || createFallbackServerInfo({
+      ...createDefaultAssetForm(),
+      assetId,
+      name: derivedName,
+      productName: info?.productName || info?.name || '',
+      productType: info?.type || '',
+      os: info?.os || '',
+      osVersion: info?.osVersion || '',
+      serviceTag: info?.serviceTag || '',
+      assetState: info?.status || '',
+      region: info?.region || '',
+      userName: info?.userName || '',
+      department: info?.department || '',
+      location: info?.location || '',
+    }),
+    isManual: !serverInfo,
+  };
+}
+
+function getAssetIdentifierCandidates(asset: any) {
+  const candidates = [
+    asset.assetId,
+    asset.serviceTag,
+    asset.name,
+    asset.serverInfo?.systemInfo?.basics?.hostname,
+    asset.serverInfo?.systemInfo?.basics?.hardware?.serialNumber,
+  ]
+    .filter(Boolean)
+    .map((value) => String(value).trim());
+
+  return Array.from(new Set(candidates));
 }
 
 // PDF export utility
@@ -85,35 +207,36 @@ const AssetInventoryPage: React.FC<AssetInventoryPageProps> = ({ sidebarCollapse
   const [editFields, setEditFields] = useState<any[]>([]);
   const [customFields, setCustomFields] = useState<{ key: string; value: string }[]>([]);
   const [saving, setSaving] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [addAssetForm, setAddAssetForm] = useState(createDefaultAssetForm());
+  const [addAssetError, setAddAssetError] = useState('');
 
   // Gather all assets from server-info
-  const assets = Object.values(data?.monitoring?.['server-info'] || {})
-    .map((serverInfo: any) => {
-      const instanceId = serverInfo?.systemInfo?.basics?.hardware?.serialNumber ||
-                        serverInfo?.systemInfo?.basics?.hostname ||
-                        serverInfo?.instanceId ||
-                        serverInfo?.systemInfo?.basics?.os?.name ||
-                        undefined;
-      const info: Record<string, any> = (data?.monitoring?.info && data?.monitoring?.info[instanceId]) ? data.monitoring.info[instanceId] : {};
-      const full: Record<string, any> = (data?.monitoring?.full && data?.monitoring?.full[instanceId]?.instance) ? data.monitoring.full[instanceId].instance : {};
-      return {
-        assetId: instanceId,
-        name: serverInfo?.systemInfo?.basics?.hostname || info?.name || '—',
-        productName: serverInfo?.systemInfo?.basics?.hardware?.model || info?.name || '—',
-        productType: info?.type || serverInfo?.systemInfo?.basics?.hardware?.model || '—',
-        os: serverInfo?.systemInfo?.basics?.os?.name || '—',
-        osVersion: serverInfo?.systemInfo?.basics?.os?.version || '',
-        serviceTag: serverInfo?.systemInfo?.basics?.hardware?.serialNumber || '—',
-        assetState: info?.status || full?.status || '—',
-        region: info?.region || full?.region || '—',
-        userName: info?.userName || '—',
-        department: info?.department || '—',
-        location: info?.location || '—',
-        info,
-        serverInfo,
-      };
-    })
-    .filter(asset => asset.assetId);
+  const assetMap = new Map<string, any>();
+
+  Object.values(data?.monitoring?.['server-info'] || {}).forEach((serverInfo: any) => {
+    const instanceId = serverInfo?.systemInfo?.basics?.hardware?.serialNumber ||
+      serverInfo?.systemInfo?.basics?.hostname ||
+      serverInfo?.instanceId ||
+      serverInfo?.systemInfo?.basics?.os?.name ||
+      undefined;
+
+    if (!instanceId) {
+      return;
+    }
+
+    const info: Record<string, any> = (data?.monitoring?.info && data.monitoring.info[instanceId]) ? data.monitoring.info[instanceId] : {};
+    const full: Record<string, any> = (data?.monitoring?.full && data.monitoring.full[instanceId]?.instance) ? data.monitoring.full[instanceId].instance : {};
+    assetMap.set(instanceId, buildAssetRecord(instanceId, info, serverInfo, full));
+  });
+
+  Object.entries(data?.monitoring?.info || {}).forEach(([assetId, info]) => {
+    if (!assetMap.has(assetId)) {
+      assetMap.set(assetId, buildAssetRecord(assetId, info as Record<string, any>));
+    }
+  });
+
+  const assets = Array.from(assetMap.values());
 
   // Find the selected asset's serverInfo
   const selectedAsset = assets.find(a => a.assetId === selectedAssetId);
@@ -179,6 +302,107 @@ const AssetInventoryPage: React.FC<AssetInventoryPageProps> = ({ sidebarCollapse
       setEditFields([]);
       setCustomFields([]);
       setSelectedAssetId(null); // Return to list
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleAddAssetFieldChange = (field: keyof ReturnType<typeof createDefaultAssetForm>, value: string) => {
+    setAddAssetForm(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleCloseAddModal = () => {
+    setIsAddModalOpen(false);
+    setAddAssetForm(createDefaultAssetForm());
+    setAddAssetError('');
+  };
+
+  const handleAddAsset = async () => {
+    const trimmedAssetId = addAssetForm.assetId.trim();
+    const trimmedName = addAssetForm.name.trim();
+
+    if (!trimmedAssetId || !trimmedName) {
+      setAddAssetError('Asset ID and Asset Name are required.');
+      return;
+    }
+
+    if (assets.some(asset => asset.assetId === trimmedAssetId)) {
+      setAddAssetError('An asset with this Asset ID already exists.');
+      return;
+    }
+
+    setSaving(true);
+    setAddAssetError('');
+
+    const payload = {
+      name: trimmedName,
+      type: addAssetForm.productType.trim(),
+      os: addAssetForm.os.trim(),
+      osVersion: addAssetForm.osVersion.trim(),
+      serviceTag: addAssetForm.serviceTag.trim(),
+      status: addAssetForm.assetState.trim(),
+      region: addAssetForm.region.trim(),
+      userName: addAssetForm.userName.trim(),
+      department: addAssetForm.department.trim(),
+      location: addAssetForm.location.trim(),
+      productName: addAssetForm.productName.trim(),
+      createdManually: true,
+      createdAt: new Date().toISOString(),
+    };
+
+    try {
+      await update(ref(database, `monitoring/info/${trimmedAssetId}`), payload);
+      handleCloseAddModal();
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDeleteAsset = async (asset: any) => {
+    const assetLabel = asset.name !== '—' ? asset.name : asset.assetId;
+    const confirmed = window.confirm(`Delete asset "${assetLabel}" permanently from the database?`);
+
+    if (!confirmed) {
+      return;
+    }
+
+    setSaving(true);
+
+    try {
+      const updates: Record<string, null> = {};
+      const identifierCandidates = getAssetIdentifierCandidates(asset);
+
+      updates[`monitoring/info/${asset.assetId}`] = null;
+      updates[`monitoring/full/${asset.assetId}`] = null;
+      updates[`monitoring/health/${asset.assetId}`] = null;
+      updates[`monitoring/metrics/${asset.assetId}`] = null;
+      updates[`monitoring/network/${asset.assetId}`] = null;
+      updates[`monitoring/services/${asset.assetId}`] = null;
+
+      Object.entries(data?.monitoring?.['server-info'] || {}).forEach(([timestamp, serverInfo]: [string, any]) => {
+        const serverIdentifiers = [
+          serverInfo?.systemInfo?.basics?.hardware?.serialNumber,
+          serverInfo?.systemInfo?.basics?.hostname,
+          serverInfo?.instanceId,
+          serverInfo?.systemInfo?.basics?.os?.name,
+        ]
+          .filter(Boolean)
+          .map((value) => String(value).trim());
+
+        if (serverIdentifiers.some((value) => identifierCandidates.includes(value))) {
+          updates[`monitoring/server-info/${timestamp}`] = null;
+        }
+      });
+
+      await update(ref(database), updates);
+
+      if (selectedAssetId === asset.assetId) {
+        setSelectedAssetId(null);
+      }
+
+      if (editAssetId === asset.assetId) {
+        handleCancelEdit();
+      }
     } finally {
       setSaving(false);
     }
@@ -614,6 +838,14 @@ const AssetInventoryPage: React.FC<AssetInventoryPageProps> = ({ sidebarCollapse
               <FileText className="w-5 h-5" />
               <span className="hidden sm:inline">Export PDF</span>
             </button>
+            <button
+              className="flex items-center gap-2 px-3 py-2 bg-violet-600 text-white rounded hover:bg-violet-700 transition"
+              onClick={() => setIsAddModalOpen(true)}
+              title="Add Asset"
+            >
+              <Plus className="w-5 h-5" />
+              <span className="hidden sm:inline">Add Asset</span>
+            </button>
           </div>
         </div>
         <div className="overflow-x-auto">
@@ -666,6 +898,14 @@ const AssetInventoryPage: React.FC<AssetInventoryPageProps> = ({ sidebarCollapse
                       >
                         <Pencil className="w-4 h-4" />
                       </button>
+                      <button
+                        className="text-red-500 hover:text-red-700 disabled:opacity-50"
+                        onClick={e => { e.stopPropagation(); handleDeleteAsset(asset); }}
+                        title="Delete Asset"
+                        disabled={saving}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
                     </td>
                   </tr>
                 ))
@@ -674,6 +914,176 @@ const AssetInventoryPage: React.FC<AssetInventoryPageProps> = ({ sidebarCollapse
           </table>
         </div>
       </div>
+
+      {isAddModalOpen && (
+        <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/50 px-4">
+          <div className="w-full max-w-3xl rounded-xl bg-white shadow-2xl border border-gray-200">
+            <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
+              <div>
+                <h3 className="text-xl font-semibold text-slate-900">Add New Asset</h3>
+                <p className="text-sm text-slate-500">Enter the asset details that an admin wants to track manually.</p>
+              </div>
+              <button
+                type="button"
+                className="rounded-full p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-700"
+                onClick={handleCloseAddModal}
+                aria-label="Close add asset popup"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="px-6 py-5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Asset ID</label>
+                  <input
+                    type="text"
+                    className="w-full rounded border border-gray-300 px-3 py-2"
+                    placeholder="Ex: LAP-DEL-001"
+                    value={addAssetForm.assetId}
+                    onChange={(e) => handleAddAssetFieldChange('assetId', e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Asset Name</label>
+                  <input
+                    type="text"
+                    className="w-full rounded border border-gray-300 px-3 py-2"
+                    placeholder="Ex: Rahul Laptop"
+                    value={addAssetForm.name}
+                    onChange={(e) => handleAddAssetFieldChange('name', e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Product Name</label>
+                  <input
+                    type="text"
+                    className="w-full rounded border border-gray-300 px-3 py-2"
+                    placeholder="Ex: Dell Latitude 5440"
+                    value={addAssetForm.productName}
+                    onChange={(e) => handleAddAssetFieldChange('productName', e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Product Type</label>
+                  <input
+                    type="text"
+                    className="w-full rounded border border-gray-300 px-3 py-2"
+                    placeholder="Ex: Laptop, Server, Router"
+                    value={addAssetForm.productType}
+                    onChange={(e) => handleAddAssetFieldChange('productType', e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Operating System</label>
+                  <input
+                    type="text"
+                    className="w-full rounded border border-gray-300 px-3 py-2"
+                    placeholder="Ex: Windows 11"
+                    value={addAssetForm.os}
+                    onChange={(e) => handleAddAssetFieldChange('os', e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">OS Version</label>
+                  <input
+                    type="text"
+                    className="w-full rounded border border-gray-300 px-3 py-2"
+                    placeholder="Ex: 23H2"
+                    value={addAssetForm.osVersion}
+                    onChange={(e) => handleAddAssetFieldChange('osVersion', e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Service Tag</label>
+                  <input
+                    type="text"
+                    className="w-full rounded border border-gray-300 px-3 py-2"
+                    placeholder="Ex: ST-0001"
+                    value={addAssetForm.serviceTag}
+                    onChange={(e) => handleAddAssetFieldChange('serviceTag', e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Asset State</label>
+                  <input
+                    type="text"
+                    className="w-full rounded border border-gray-300 px-3 py-2"
+                    placeholder="Ex: In Use"
+                    value={addAssetForm.assetState}
+                    onChange={(e) => handleAddAssetFieldChange('assetState', e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Region</label>
+                  <input
+                    type="text"
+                    className="w-full rounded border border-gray-300 px-3 py-2"
+                    placeholder="Ex: Mumbai"
+                    value={addAssetForm.region}
+                    onChange={(e) => handleAddAssetFieldChange('region', e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">User Name</label>
+                  <input
+                    type="text"
+                    className="w-full rounded border border-gray-300 px-3 py-2"
+                    placeholder="Ex: Rahul Upadhyay"
+                    value={addAssetForm.userName}
+                    onChange={(e) => handleAddAssetFieldChange('userName', e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Department Name</label>
+                  <input
+                    type="text"
+                    className="w-full rounded border border-gray-300 px-3 py-2"
+                    placeholder="Ex: IT Infrastructure"
+                    value={addAssetForm.department}
+                    onChange={(e) => handleAddAssetFieldChange('department', e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                  <input
+                    type="text"
+                    className="w-full rounded border border-gray-300 px-3 py-2"
+                    placeholder="Ex: Head Office"
+                    value={addAssetForm.location}
+                    onChange={(e) => handleAddAssetFieldChange('location', e.target.value)}
+                  />
+                </div>
+              </div>
+
+              {addAssetError && (
+                <div className="mt-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
+                  {addAssetError}
+                </div>
+              )}
+            </div>
+
+            <div className="flex justify-end gap-3 border-t border-gray-200 px-6 py-4">
+              <button
+                type="button"
+                className="rounded bg-gray-200 px-4 py-2 text-gray-700 hover:bg-gray-300"
+                onClick={handleCloseAddModal}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="rounded bg-violet-600 px-4 py-2 text-white hover:bg-violet-700 disabled:opacity-60"
+                onClick={handleAddAsset}
+                disabled={saving}
+              >
+                {saving ? 'Adding...' : 'Add Asset'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </PageWrapper>
   );
 };

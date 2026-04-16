@@ -7,9 +7,10 @@ interface MemoryMetricsProps {
   swap: MonitoringData['monitoring']['server-info'][string]['memory']['swap'];
   virtualMemory: MonitoringData['monitoring']['server-info'][string]['memory']['virtualMemory'];
   instanceId: string;
+  exportMode?: boolean;
 }
 
-const MemoryMetrics: React.FC<MemoryMetricsProps> = ({ data, swap, virtualMemory, instanceId }) => {
+const MemoryMetrics: React.FC<MemoryMetricsProps> = ({ data, swap, virtualMemory, instanceId, exportMode = false }) => {
   const usedPercentage = (data.used / data.total) * 100;
   const buffersPercentage = (data.buffers / data.total) * 100;
   const freePercentage = 100 - usedPercentage - buffersPercentage;
@@ -67,7 +68,7 @@ const MemoryMetrics: React.FC<MemoryMetricsProps> = ({ data, swap, virtualMemory
   );
 
   return (
-    <div className="bg-white rounded-lg shadow p-6 fade-in">
+    <div className={`bg-white rounded-lg shadow p-6 ${exportMode ? '' : 'fade-in'}`}>
       <h3 className="text-lg font-semibold text-slate-800 mb-4">Memory Usage</h3>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div className="bg-gray-50 p-4 rounded-lg">
@@ -94,7 +95,7 @@ const MemoryMetrics: React.FC<MemoryMetricsProps> = ({ data, swap, virtualMemory
               outerRadius={80}
               paddingAngle={5}
               dataKey="value"
-              isAnimationActive={true}
+              isAnimationActive={!exportMode}
               label={({ name, value }) => `${name}: ${value.toFixed(1)}%`}
             >
               {memoryData.map((entry, index) => (

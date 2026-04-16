@@ -32,39 +32,81 @@ async function addSectionToPDF(doc: JsPDFType, sectionId: string, title: string)
     const section = document.getElementById(sectionId);
     if (!section) return;
 
-    let yPosition = (doc as any).lastAutoTable.finalY || 0;
-    
-    // Add a new page if there's not enough space for the title and some content
-    if (yPosition > 240) {
-        doc.addPage();
-        yPosition = 0;
-    }
-    
-    doc.setFontSize(16);
-    doc.setTextColor(0, 0, 0);
-    doc.text(title, 14, yPosition + 20);
-
     const canvas = await html2canvas(section, {
-        scale: 2, // A scale of 2 is a good balance of quality and performance
+        scale: 2,
         useCORS: true,
         backgroundColor: '#ffffff',
+        windowWidth: section.scrollWidth,
     });
 
-    const imgData = canvas.toDataURL('image/png', 1.0);
-    const pdfWidth = doc.internal.pageSize.getWidth() - 28;
-    const imgHeight = (canvas.height * pdfWidth) / canvas.width;
-    const imgY = yPosition + 28;
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const marginX = 14;
+    const topMargin = 20;
+    const bottomMargin = 15;
+    const titleGap = 8;
+    const sectionWidth = pageWidth - (marginX * 2);
+    const titleHeight = 8;
+    const firstPageImageTop = topMargin + titleGap;
+    const firstPageAvailableHeight = pageHeight - firstPageImageTop - bottomMargin;
+    const followingPageTop = 15;
+    const followingPageAvailableHeight = pageHeight - followingPageTop - bottomMargin;
+    const scaleRatio = sectionWidth / canvas.width;
+    const firstPageSliceHeightPx = Math.max(1, Math.floor(firstPageAvailableHeight / scaleRatio));
+    const followingPageSliceHeightPx = Math.max(1, Math.floor(followingPageAvailableHeight / scaleRatio));
 
-    if (imgY + imgHeight > doc.internal.pageSize.getHeight() - 15) {
-        doc.addPage();
-        doc.addImage(imgData, 'PNG', 14, 20, pdfWidth, imgHeight, undefined, 'FAST');
-        // @ts-ignore
-        doc.lastAutoTable.finalY = 20 + imgHeight;
-    } else {
-        doc.addImage(imgData, 'PNG', 14, imgY, pdfWidth, imgHeight, undefined, 'FAST');
-        // @ts-ignore
-        doc.lastAutoTable.finalY = imgY + imgHeight;
+    let currentOffsetPx = 0;
+    let isFirstSlice = true;
+
+    while (currentOffsetPx < canvas.height) {
+        const sliceHeightPx = Math.min(
+            isFirstSlice ? firstPageSliceHeightPx : followingPageSliceHeightPx,
+            canvas.height - currentOffsetPx
+        );
+
+        const sliceCanvas = document.createElement('canvas');
+        sliceCanvas.width = canvas.width;
+        sliceCanvas.height = sliceHeightPx;
+
+        const sliceContext = sliceCanvas.getContext('2d');
+        if (!sliceContext) {
+            return;
+        }
+
+        sliceContext.fillStyle = '#ffffff';
+        sliceContext.fillRect(0, 0, sliceCanvas.width, sliceCanvas.height);
+        sliceContext.drawImage(
+            canvas,
+            0,
+            currentOffsetPx,
+            canvas.width,
+            sliceHeightPx,
+            0,
+            0,
+            canvas.width,
+            sliceHeightPx
+        );
+
+        const imageTop = isFirstSlice ? firstPageImageTop : followingPageTop;
+        const renderedHeight = sliceHeightPx * scaleRatio;
+
+        if (isFirstSlice) {
+            doc.setFontSize(16);
+            doc.setTextColor(0, 0, 0);
+            doc.text(title, marginX, topMargin);
+        } else {
+            doc.addPage();
+        }
+
+        const sliceData = sliceCanvas.toDataURL('image/png', 1.0);
+        doc.addImage(sliceData, 'PNG', marginX, imageTop, sectionWidth, renderedHeight, undefined, 'FAST');
+
+        currentOffsetPx += sliceHeightPx;
+        isFirstSlice = false;
     }
+
+    // @ts-ignore
+    doc.lastAutoTable.finalY = followingPageTop + Math.min(followingPageAvailableHeight, (canvas.height % followingPageSliceHeightPx || followingPageSliceHeightPx) * scaleRatio);
 }
 
 // --- REACT COMPONENT ---
@@ -92,7 +134,7 @@ const Report: React.FC<ReportPageProps> = ({ sidebarCollapsed }) => {
         if (!system) return;
 
         const generatePdf = async () => {
-            await new Promise(res => setTimeout(res, 200)); // Short wait for render
+            await new Promise(res => setTimeout(res, 1200));
 
             const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
             doc.text(`${system.name} - Full Report`, 14, 20);
@@ -169,6 +211,13 @@ const Report: React.FC<ReportPageProps> = ({ sidebarCollapsed }) => {
                     font-weight: bold;
                     margin-bottom: 15px;
                 }
+                .pdf-export-container,
+                .pdf-export-container * {
+                    animation: none !important;
+                    transition: none !important;
+                    opacity: 1 !important;
+                    transform: none !important;
+                }
             `}</style>
             
             <div className="max-w-4xl mx-auto p-8">
@@ -195,10 +244,10 @@ const Report: React.FC<ReportPageProps> = ({ sidebarCollapsed }) => {
             {exportingSystemId && systemForExport && (
                 <div className="pdf-export-container">
                     <div id="sh-cpu-metrics" className="export-section">
-                        <CPUMetrics data={systemForExport.fullDetails.cpu} instanceId={systemForExport.id} />
+                        <CPUMetrics data={systemForExport.fullDetails.cpu} instanceId={systemForExport.id} exportMode />
                     </div>
                     <div id="sh-memory-metrics" className="export-section">
-                        <MemoryMetrics data={systemForExport.fullDetails.memory.physical} swap={systemForExport.fullDetails.memory.swap} virtualMemory={systemForExport.fullDetails.memory.virtualMemory} instanceId={systemForExport.id} />
+                        <MemoryMetrics data={systemForExport.fullDetails.memory.physical} swap={systemForExport.fullDetails.memory.swap} virtualMemory={systemForExport.fullDetails.memory.virtualMemory} instanceId={systemForExport.id} exportMode />
                     </div>
                     <div id="cw-cpu-utilization" className="export-section">
                         <ResponsiveContainer width="100%" height={350}><BarChart data={metricsData}><CartesianGrid /><XAxis dataKey="name" /><YAxis /><Tooltip /><Bar dataKey="cpu" fill="#8884d8" isAnimationActive={false} /></BarChart></ResponsiveContainer>
